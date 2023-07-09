@@ -11,7 +11,7 @@ class ViewModel(private val repository: Model<Joke, Error>) {
 
             override fun provideSuccess(data: Joke) = textCallback.provideText(data.getJokeUi())
 
-            override fun provideError(error: Error) =textCallback.provideText(error.message())
+            override fun provideError(error: Error) = textCallback.provideText(error.message())
         })
     }
 

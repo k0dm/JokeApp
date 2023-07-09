@@ -1,6 +1,7 @@
 package com.example.jokeapp
 
 import android.app.Application
+import com.example.jokeapp.data.cloud.JokeService
 
 class JokeApp : Application() {
 
@@ -9,6 +10,6 @@ class JokeApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        viewModel = ViewModel(Model.Test(ManageResources.Base(this)))
+        viewModel = ViewModel(Model.Base(ManageResources.Base(this), JokeService.Base()))
     }
 }
