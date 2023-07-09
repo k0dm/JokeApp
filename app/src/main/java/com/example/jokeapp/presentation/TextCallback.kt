@@ -1,4 +1,4 @@
-package com.example.jokeapp
+package com.example.jokeapp.presentation
 
 interface TextCallback {
 

@@ -1,4 +1,7 @@
-package com.example.jokeapp
+package com.example.jokeapp.data
+
+import com.example.jokeapp.presentation.Joke
+import com.example.jokeapp.presentation.Error
 
 interface ResultCallback<S, E> {
 

@@ -1,9 +1,12 @@
-package com.example.jokeapp
+package com.example.jokeapp.data
 
-import android.widget.HeterogeneousExpandableList
-import com.example.jokeapp.data.cloud.ErrorType
+import com.example.jokeapp.presentation.Joke
+import com.example.jokeapp.presentation.ManageResources
 import com.example.jokeapp.data.cloud.JokeService
-import com.example.jokeapp.data.cloud.ServiceCallback
+import com.example.jokeapp.presentation.Error
+import retrofit2.Call
+import retrofit2.Response
+import java.net.UnknownHostException
 
 interface Model<S, E> {
 
@@ -13,21 +16,32 @@ interface Model<S, E> {
 
     fun clear()
 
-    class Base(manageResources: ManageResources, private val service: JokeService) : Model<Joke, Error> {
+    class Base(manageResources: ManageResources, private val service: JokeService) :
+        Model<Joke, Error> {
         private val noConnection by lazy { Error.NoConnection(manageResources) }
         private val serviceUnavailable by lazy { Error.ServiceUnavailable(manageResources) }
         private var resultCallback: ResultCallback<Joke, Error> = ResultCallback.Empty()
         override fun getJoke() {
-            service.getJoke(object : ServiceCallback{
 
-                override fun returnSuccess(data: String) {
-                    resultCallback.provideSuccess(Joke(data,""))
+            service.getJoke().enqueue(object : retrofit2.Callback<JokeCloud> {
+
+                override fun onResponse(call: Call<JokeCloud>, response: Response<JokeCloud>) {
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        if (body != null) {
+                            resultCallback.provideSuccess(body.toJoke())
+                        } else {
+                            resultCallback.provideError(serviceUnavailable)
+                        }
+                    } else {
+                        resultCallback.provideError(serviceUnavailable)
+                    }
                 }
 
-                override fun returnError(type: ErrorType) {
-                    val error = if (type == ErrorType.NO_INTERNET) {
+                override fun onFailure(call: Call<JokeCloud>, t: Throwable) {
+                    val error = if (t is UnknownHostException) {
                         noConnection
-                    }else {
+                    } else {
                         serviceUnavailable
                     }
                     resultCallback.provideError(error)

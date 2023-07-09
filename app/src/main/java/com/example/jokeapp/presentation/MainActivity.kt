@@ -1,4 +1,4 @@
-package com.example.jokeapp
+package com.example.jokeapp.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.example.jokeapp.JokeApp
+import com.example.jokeapp.R
 
 class MainActivity : AppCompatActivity() {
 

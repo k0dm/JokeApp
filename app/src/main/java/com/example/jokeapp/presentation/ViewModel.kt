@@ -1,4 +1,7 @@
-package com.example.jokeapp
+package com.example.jokeapp.presentation
+
+import com.example.jokeapp.data.Model
+import com.example.jokeapp.data.ResultCallback
 
 
 class ViewModel(private val repository: Model<Joke, Error>) {

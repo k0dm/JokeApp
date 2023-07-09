@@ -1,5 +1,11 @@
 package com.example.jokeapp
 
+import com.example.jokeapp.data.Model
+import com.example.jokeapp.data.ResultCallback
+import com.example.jokeapp.presentation.Error
+import com.example.jokeapp.presentation.Joke
+import com.example.jokeapp.presentation.TextCallback
+import com.example.jokeapp.presentation.ViewModel
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
