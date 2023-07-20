@@ -1,18 +1,25 @@
 package com.example.jokeapp.presentation
 
+import androidx.annotation.StringRes
 import com.example.jokeapp.R
 
 interface Error {
 
     fun message(): String
 
-    class NoConnection(private val manageResources: ManageResources): Error {
-
-        override fun message() =manageResources.getString(R.string.no_connection)
+    abstract class Abstract(
+        private val manageResources: ManageResources,
+        @StringRes private val messageId: Int
+    ) : Error {
+        override fun message() = manageResources.getString(messageId)
     }
 
-    class ServiceUnavailable(private val manageResources: ManageResources): Error {
+    class NoConnection(manageResources: ManageResources) :
+        Abstract(manageResources, R.string.no_connection)
 
-        override fun message() =manageResources.getString(R.string.service_unavailable)
-    }
+    class ServiceUnavailable(manageResources: ManageResources) :
+        Abstract(manageResources, R.string.service_unavailable)
+
+    class NoCachedJoke(manageResources: ManageResources) :
+            Abstract(manageResources, R.string.no_cached_joke)
 }

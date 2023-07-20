@@ -1,6 +1,7 @@
 package com.example.jokeapp.data
 
-import com.example.jokeapp.presentation.Joke
+import com.example.jokeapp.data.cache.CacheDataSource
+import com.example.jokeapp.presentation.JokeUi
 import com.google.gson.annotations.SerializedName
 
 data class JokeCloud(
@@ -13,5 +14,8 @@ data class JokeCloud(
     @SerializedName("type")
     private val type: String
 ) {
-    fun toJoke() = Joke(text, punchLine)
+    fun toBaseJoke() = JokeUi.Base(text, punchLine)
+    fun toFavoriteJoke() = JokeUi.Favorite(text, punchLine)
+    fun change(cacheDataSource: CacheDataSource) = cacheDataSource.addOrRemove(id, this)
+
 }

@@ -1,17 +1,11 @@
 package com.example.jokeapp.data
 
-import com.example.jokeapp.presentation.Joke
-import com.example.jokeapp.presentation.Error
+import com.example.jokeapp.presentation.JokeUi
 
-interface ResultCallback<S, E> {
+interface ResultCallback {
 
-    fun provideSuccess(data: S)
-
-    fun provideError(error: E)
-
-    class Empty : ResultCallback<Joke, Error> {
-        override fun provideSuccess(data: Joke) = Unit
-
-        override fun provideError(error: Error) = Unit
+    fun provideJoke(jokeUI: JokeUi)
+    class Empty : ResultCallback {
+        override fun provideJoke(jokeUI: JokeUi) = Unit
     }
 }

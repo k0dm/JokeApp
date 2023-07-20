@@ -1,21 +1,26 @@
 package com.example.jokeapp.presentation
 
-import com.example.jokeapp.data.Model
+import com.example.jokeapp.data.Repository
 import com.example.jokeapp.data.ResultCallback
 
 
-class ViewModel(private val repository: Model<Joke, Error>) {
+class ViewModel(private val repository: Repository) {
 
-    private var callback: TextCallback = TextCallback.Empty()
+    private var dataCallback: DataCallback = DataCallback.Empty()
+    private var resultCallback = object : ResultCallback {
 
-    fun init(textCallback: TextCallback) {
-        this.callback = textCallback
-        repository.init(object : ResultCallback<Joke, Error> {
+        override fun provideJoke(jokeUI: JokeUi) {
+            jokeUI.map(dataCallback)
+        }
+    }
 
-            override fun provideSuccess(data: Joke) = textCallback.provideText(data.getJokeUi())
+    fun init(dataCallback: DataCallback) {
+        this.dataCallback = dataCallback
+        repository.init(resultCallback)
+    }
 
-            override fun provideError(error: Error) = textCallback.provideText(error.message())
-        })
+    fun chooseFavorite(isChecked: Boolean) {
+        repository.chooseFavorite(isChecked)
     }
 
     fun getJoke() {
@@ -23,6 +28,10 @@ class ViewModel(private val repository: Model<Joke, Error>) {
     }
 
     fun clear() {
-        callback = TextCallback.Empty()
+        dataCallback = DataCallback.Empty()
+    }
+
+    fun changeJokeStatus() {
+        repository.changeJokeStatus(resultCallback)
     }
 }

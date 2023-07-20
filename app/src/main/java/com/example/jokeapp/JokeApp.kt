@@ -1,7 +1,9 @@
 package com.example.jokeapp
 
 import android.app.Application
-import com.example.jokeapp.data.Model
+import com.example.jokeapp.data.Repository
+import com.example.jokeapp.data.cache.CacheDataSource
+import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.presentation.ManageResources
 import com.example.jokeapp.data.cloud.JokeService
 import com.example.jokeapp.presentation.ViewModel
@@ -18,10 +20,14 @@ class JokeApp : Application() {
             .baseUrl("https://official-joke-api.appspot.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+        val manageResources = ManageResources.Base(this)
         viewModel = ViewModel(
-            Model.Base(
-                ManageResources.Base(this),
-                retrofit.create(JokeService::class.java)
+            Repository.Base(
+                CloudDataSource.Base(
+                    retrofit.create(JokeService::class.java),
+                    manageResources
+                ),
+                CacheDataSource.Fake(manageResources)
             )
         )
     }
