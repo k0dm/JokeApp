@@ -29,7 +29,7 @@ class JokeApp : Application() {
                     retrofit.create(JokeService::class.java),
                     manageResources
                 ),
-                CacheDataSource.Base(Realm.getDefaultInstance(),manageResources)
+                CacheDataSource.Base(manageResources)
             )
         )
     }

@@ -9,7 +9,7 @@ class ViewModel(private val repository: Repository) {
     private var dataCallback: DataCallback = DataCallback.Empty()
     private var resultCallback = object : ResultCallback {
 
-        override fun provideJoke(jokeUI: JokeUi) {
+        override fun provideJokeUi(jokeUI: JokeUi) {
             jokeUI.map(dataCallback)
         }
     }
