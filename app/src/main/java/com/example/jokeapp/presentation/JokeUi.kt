@@ -10,9 +10,9 @@ abstract class JokeUi(
     private val iconResId: Int
 ) {
 
-    fun map(dataCallback: DataCallback) {
-        dataCallback.provideText("$text\n$punchline")
-        dataCallback.provideResId(iconResId)
+    fun map(dataCallback: DataCallback) = with(dataCallback) {
+        provideText("$text\n$punchline")
+        provideResId(iconResId)
     }
 
     class Base(text: String, punchline: String) :

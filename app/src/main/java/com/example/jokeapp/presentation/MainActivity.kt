@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         viewModel = (application as JokeApp).viewModel
-        val button = findViewById<Button>(R.id.actionButton)
+        val getJokeButton = findViewById<Button>(R.id.actionButton)
         val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
         val textView = findViewById<TextView>(R.id.textView)
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
@@ -29,10 +29,8 @@ class MainActivity : AppCompatActivity() {
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             viewModel.chooseFavorite(isChecked)
         }
-
-
-        button.setOnClickListener {
-            button.isEnabled = false
+        getJokeButton.setOnClickListener {
+            getJokeButton.isEnabled = false
             progressBar.visibility = View.VISIBLE
             viewModel.getJoke()
         }
@@ -43,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.init(object : DataCallback {
             override fun provideText(text: String) = runOnUiThread {
                 progressBar.visibility = View.GONE
-                button.isEnabled = true
+                getJokeButton.isEnabled = true
                 textView.text = text
             }
 

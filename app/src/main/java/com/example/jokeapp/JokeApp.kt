@@ -7,6 +7,7 @@ import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.presentation.ManageResources
 import com.example.jokeapp.data.cloud.JokeService
 import com.example.jokeapp.presentation.ViewModel
+import io.realm.Realm
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -16,6 +17,7 @@ class JokeApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Realm.init(this)
         val retrofit = Retrofit.Builder()
             .baseUrl("https://official-joke-api.appspot.com/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -27,7 +29,7 @@ class JokeApp : Application() {
                     retrofit.create(JokeService::class.java),
                     manageResources
                 ),
-                CacheDataSource.Fake(manageResources)
+                CacheDataSource.Base(Realm.getDefaultInstance(),manageResources)
             )
         )
     }
