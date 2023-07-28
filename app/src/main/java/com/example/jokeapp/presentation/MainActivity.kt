@@ -13,12 +13,12 @@ import com.example.jokeapp.R
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: ViewModel
+    private lateinit var mainViewModel: MainViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = (application as JokeApp).viewModel
+        mainViewModel = (application as JokeApp).mainViewModel
         val getJokeButton = findViewById<Button>(R.id.actionButton)
         val favoriteButton = findViewById<ImageButton>(R.id.favoriteButton)
         val textView = findViewById<TextView>(R.id.textView)
@@ -27,18 +27,18 @@ class MainActivity : AppCompatActivity() {
 
         val checkBox = findViewById<CheckBox>(R.id.checkbox)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.chooseFavorite(isChecked)
+            mainViewModel.chooseFavorite(isChecked)
         }
         getJokeButton.setOnClickListener {
             getJokeButton.isEnabled = false
             progressBar.visibility = View.VISIBLE
-            viewModel.getJoke()
+            mainViewModel.getJoke()
         }
         favoriteButton.setOnClickListener {
-            viewModel.changeJokeStatus()
+            mainViewModel.changeJokeStatus()
         }
 
-        viewModel.init(object : DataCallback {
+        mainViewModel.init(object : JokeUiCallback {
             override fun provideText(text: String) = runOnUiThread {
                 progressBar.visibility = View.GONE
                 getJokeButton.isEnabled = true
@@ -49,10 +49,5 @@ class MainActivity : AppCompatActivity() {
                 favoriteButton.setImageResource(resId)
             }
         })
-    }
-
-    override fun onDestroy() {
-        viewModel.clear()
-        super.onDestroy()
     }
 }

@@ -1,14 +1,5 @@
 package com.example.jokeapp
 
-import com.example.jokeapp.data.Repository
-import com.example.jokeapp.data.ResultCallback
-import com.example.jokeapp.presentation.Error
-import com.example.jokeapp.presentation.JokeUi
-import com.example.jokeapp.presentation.DataCallback
-import com.example.jokeapp.presentation.ViewModel
-import org.junit.Assert.assertEquals
-import org.junit.Test
-
 
 //class ModelTest {
 //
