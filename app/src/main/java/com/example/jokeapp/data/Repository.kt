@@ -7,11 +7,11 @@ import com.example.jokeapp.presentation.Error
 
 interface Repository {
 
-    fun fetch(): JokeResult
+    suspend fun fetch(): JokeResult
 
     fun chooseFavorite(fromCache: Boolean)
 
-    fun changeJokeStatus(): JokeUi
+    suspend fun changeJokeStatus(): JokeUi
 
 
     class Base(
@@ -23,7 +23,7 @@ interface Repository {
         private var jokeCached: Joke? = null
         private var getFromCache = false
 
-        override fun fetch(): JokeResult {
+        override suspend fun fetch(): JokeResult {
             val jokeResult = if (getFromCache) {
                 cacheDataSource.fetch()
             } else {
@@ -45,7 +45,7 @@ interface Repository {
             getFromCache = fromCache
         }
 
-        override fun changeJokeStatus(): JokeUi{
+        override suspend fun changeJokeStatus(): JokeUi{
             return jokeCached!!.map(change)
         }
     }

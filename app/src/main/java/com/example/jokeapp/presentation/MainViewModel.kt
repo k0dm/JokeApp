@@ -1,10 +1,14 @@
 package com.example.jokeapp.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.jokeapp.data.Joke
 import com.example.jokeapp.data.Repository
 import com.example.jokeapp.data.ToBaseUi
 import com.example.jokeapp.data.ToFavoriteUi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainViewModel(
@@ -18,23 +22,32 @@ class MainViewModel(
         this.jokeUiCallback = jokeUiCallback
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        jokeUiCallback = JokeUiCallback.Empty()
+    }
+
     fun chooseFavorite(isChecked: Boolean) {
         repository.chooseFavorite(isChecked)
     }
 
-    fun getJoke() = Thread {
+    fun getJoke() = viewModelScope.launch(Dispatchers.IO) {
         val result = repository.fetch()
-        if (result.isSuccessful()) {
-            result.map(if (result.isFavorite()) toFavoriteUi else toBaseUi).show(jokeUiCallback)
+        val jokeUi = if (result.isSuccessful()) {
+            result.map(if (result.isFavorite()) toFavoriteUi else toBaseUi)
         } else {
-            JokeUi.Failed(result.errorMessage()).show(jokeUiCallback)
+            JokeUi.Failed(result.errorMessage())
         }
-    }.start()
+        withContext(Dispatchers.Main) {
+            jokeUi.show(jokeUiCallback)
+        }
+    }
 
 
-    fun changeJokeStatus() = Thread {
+    fun changeJokeStatus() = viewModelScope.launch(Dispatchers.IO) {
         val result = repository.changeJokeStatus()
-        result.show(jokeUiCallback)
-    }.start()
-
+        withContext(Dispatchers.Main) {
+            result.show(jokeUiCallback)
+        }
+    }
 }
