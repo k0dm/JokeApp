@@ -4,7 +4,9 @@ import com.example.jokeapp.data.DispatcherList
 import com.example.jokeapp.data.Joke
 import com.example.jokeapp.data.JokeResult
 import com.example.jokeapp.data.Repository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.*
 import org.junit.Before
@@ -16,7 +18,6 @@ class MainViewModelTest {
     private lateinit var toFavoriteMapper: FakeMapper
     private lateinit var toBaseMapper: FakeMapper
     private lateinit var jokeUiCallback: FakeJokeUiCallback
-    private lateinit var dispatcherList: DispatcherList
 
     @Before
     fun setUp() {
@@ -24,8 +25,7 @@ class MainViewModelTest {
         toFavoriteMapper = FakeMapper(true)
         toBaseMapper = FakeMapper(false)
         jokeUiCallback = FakeJokeUiCallback()
-        dispatcherList = FakeDispatchers()
-        viewModel = MainViewModel(repository, toBaseMapper, toFavoriteMapper, dispatcherList)
+        viewModel = MainViewModel(repository, toBaseMapper, toFavoriteMapper,FakeDispatchers())
         viewModel.init(jokeUiCallback)
     }
 
@@ -84,14 +84,24 @@ class MainViewModelTest {
         assertEquals(expectedId, jokeUiCallback.provideIconResIdList[0])
     }
 }
+private class FakeHandleUi(private val dispatchers: DispatcherList) : HandleUi {
+    override fun handle(
+        coroutineScope: CoroutineScope,
+        jokeUiCallback: JokeUiCallback,
+        block: suspend () -> JokeUi
+    ) {
+        coroutineScope.launch (dispatchers.io()){
+            block.invoke().show(jokeUiCallback)
+        }
+    }
 
+}
 private class FakeDispatchers : DispatcherList {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val dispatcher = TestCoroutineDispatcher()
 
     override fun io() = dispatcher
-
     override fun ui() = dispatcher
 }
 

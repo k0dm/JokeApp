@@ -15,10 +15,14 @@ class MainViewModel(
     private val repository: Repository,
     private val toBaseUi: Joke.Mapper<JokeUi> = ToBaseUi(),
     private val toFavoriteUi: Joke.Mapper<JokeUi> = ToFavoriteUi(),
-    private val dispatcherList: DispatcherList = DispatcherList.Base()
-) : ViewModel() {
+    dispatcherList: DispatcherList = DispatcherList.Base()
+) : BaseViewModel(dispatcherList) {
 
     private var jokeUiCallback: JokeUiCallback = JokeUiCallback.Empty()
+    private val blockUi: suspend (JokeUi) -> Unit = {
+        it.show(jokeUiCallback)
+    }
+
     fun init(jokeUiCallback: JokeUiCallback) {
         this.jokeUiCallback = jokeUiCallback
     }
@@ -32,23 +36,35 @@ class MainViewModel(
         repository.chooseFavorite(isChecked)
     }
 
-    fun getJoke() = viewModelScope.launch(dispatcherList.io()) {
-        val result = repository.fetch()
-        val jokeUi = if (result.isSuccessful()) {
-            result.map(if (result.isFavorite()) toFavoriteUi else toBaseUi)
-        } else {
-            JokeUi.Failed(result.errorMessage())
-        }
-        withContext(dispatcherList.ui()) {
-            jokeUi.show(jokeUiCallback)
-        }
+    fun getJoke() {
+        handle({
+            val result = repository.fetch()
+            if (result.isSuccessful()) {
+                result.map(if (result.isFavorite()) toFavoriteUi else toBaseUi)
+            } else {
+                JokeUi.Failed(result.errorMessage())
+            }
+        }, blockUi)
     }
 
+    fun changeJokeStatus() {
+        handle({ repository.changeJokeStatus() }, blockUi)
+    }
+}
 
-    fun changeJokeStatus() = viewModelScope.launch(dispatcherList.io()) {
-        val result = repository.changeJokeStatus()
-        withContext(dispatcherList.ui()) {
-            result.show(jokeUiCallback)
+
+abstract class BaseViewModel(
+    private val dispatcherList: DispatcherList
+) : ViewModel() {
+    fun <T> handle(
+        blockIo: suspend () -> T,
+        blockUi: suspend (T) -> Unit
+    ) {
+        viewModelScope.launch(dispatcherList.io()) {
+            val jokeUi = blockIo.invoke()
+            withContext(dispatcherList.ui()) {
+                blockUi.invoke(jokeUi)
+            }
         }
     }
 }

@@ -1,9 +1,14 @@
 package com.example.jokeapp.data
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.jokeapp.data.cache.CacheDataSource
 import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.presentation.JokeUi
 import com.example.jokeapp.presentation.Error
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 interface Repository {
 
