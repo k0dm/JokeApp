@@ -6,7 +6,7 @@ import com.example.jokeapp.R
 
 interface JokeUi {
 
-    fun show(jokeUiCallback: JokeUiCallback)
+    fun show(communication: Communication<State>)
     abstract class Abstract(
         private val text: String,
         private val punchline: String,
@@ -14,9 +14,8 @@ interface JokeUi {
         private val iconResId: Int
     ) : JokeUi {
 
-        override fun show(jokeUiCallback: JokeUiCallback) = with(jokeUiCallback) {
-            provideText("$text\n$punchline")
-            provideResId(iconResId)
+        override fun show(communication: Communication<State>) = with(communication) {
+            this.map(State.Initial("$text\n$punchline", iconResId))
         }
     }
 

@@ -1,0 +1,72 @@
+package com.example.jokeapp.presentation
+
+import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.annotation.DrawableRes
+import com.example.jokeapp.presentation.view.ShowButton
+import com.example.jokeapp.presentation.view.ShowImageView
+import com.example.jokeapp.presentation.view.ShowProgressBar
+import com.example.jokeapp.presentation.view.ShowText
+
+interface State {
+
+    fun show(
+        progress: ShowProgressBar,
+        button: ShowButton,
+        textView: ShowText,
+        imageButton: ShowImageView
+    )
+
+    fun show(progress: ShowProgressBar, button: ShowButton)
+    fun show(textView: ShowText, imageButton: ShowImageView)
+
+
+    class Progress : State {
+        override fun show(
+            progress: ShowProgressBar,
+            button: ShowButton,
+            textView: ShowText,
+            imageButton: ShowImageView
+        ) {
+            show(progress, button)
+        }
+
+        override fun show(progress: ShowProgressBar, button: ShowButton) {
+            progress.show(true)
+            button.show(false)
+        }
+
+        override fun show(textView: ShowText, imageButton: ShowImageView) {
+            textView.show("")
+            imageButton.show(0)
+        }
+
+    }
+
+    class Initial(private val text: String, @DrawableRes private val iconResId: Int) : State {
+
+        override fun show(
+            progress: ShowProgressBar,
+            button: ShowButton,
+            textView: ShowText,
+            imageButton: ShowImageView
+        ) {
+            show(progress, button)
+            show(textView, imageButton)
+        }
+
+        override fun show(progress: ShowProgressBar, button: ShowButton) {
+            progress.show(false)
+            button.show(true)
+        }
+
+        override fun show(textView: ShowText, imageButton: ShowImageView) {
+            textView.show(text)
+            imageButton.show(iconResId)
+        }
+
+    }
+}
+

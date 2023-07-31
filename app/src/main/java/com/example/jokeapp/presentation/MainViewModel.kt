@@ -14,17 +14,18 @@ import kotlinx.coroutines.withContext
 
 
 class MainViewModel(
-    private val communication: Communication<JokeUi>,
+    private val communication: Communication<State>,
     private val repository: Repository,
     private val toBaseUi: Joke.Mapper<JokeUi> = ToBaseUi(),
     private val toFavoriteUi: Joke.Mapper<JokeUi> = ToFavoriteUi(),
+    private val progress: State,
     dispatcherList: DispatcherList = DispatcherList.Base()
-) : BaseViewModel(dispatcherList), Observe<JokeUi>{
+) : BaseViewModel(dispatcherList), Observe<State>{
 
     private val blockUi: suspend (JokeUi) -> Unit = {
-        communication.map(it)
+        it.show(communication)
     }
-    override fun observe(owner: LifecycleOwner, observer: Observer<JokeUi>) {
+    override fun observe(owner: LifecycleOwner, observer: Observer<State>) {
         communication.observe(owner, observer)
     }
     fun chooseFavorite(isChecked: Boolean) {
@@ -32,6 +33,7 @@ class MainViewModel(
     }
 
     fun getJoke() {
+        communication.map(progress)
         handle({
             val result = repository.fetch()
             if (result.isSuccessful()) {
@@ -45,10 +47,7 @@ class MainViewModel(
     fun changeJokeStatus() {
         handle({ repository.changeJokeStatus() }, blockUi)
     }
-
-
 }
-
 
 abstract class BaseViewModel(
     private val dispatcherList: DispatcherList

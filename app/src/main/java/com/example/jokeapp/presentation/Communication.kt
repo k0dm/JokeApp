@@ -20,8 +20,8 @@ interface Communication<T : Any> : Observe<T> {
     }
 }
 
-interface JokeCommunication : Communication<JokeUi> {
-    class Base : Communication.Abstract<JokeUi>(), JokeCommunication
+interface StateCommunication: Communication<State> {
+    class Base : Communication.Abstract<State>(), StateCommunication
 }
 
 interface Observe<T : Any> {

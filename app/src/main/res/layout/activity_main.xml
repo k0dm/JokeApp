@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <com.example.jokeapp.presentation.view.CustomTextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
 
             tools:text="it is a joke ahahhaha" />
 
-        <ImageButton
+        <com.example.jokeapp.presentation.view.CustomImageButton
             android:id="@+id/favoriteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,14 +41,17 @@
     </LinearLayout>
 
 
-    <ProgressBar
+    <com.example.jokeapp.presentation.view.CustomProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true" />
 
-    <Button
+    <com.example.jokeapp.presentation.view.CustomButton
+        android:backgroundTint="@color/teal_200"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:textSize="16sp"
         android:id="@+id/actionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

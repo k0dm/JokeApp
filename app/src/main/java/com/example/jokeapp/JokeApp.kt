@@ -7,9 +7,9 @@ import com.example.jokeapp.data.cache.RealmProvider
 import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.presentation.ManageResources
 import com.example.jokeapp.data.cloud.JokeService
-import com.example.jokeapp.presentation.Communication
-import com.example.jokeapp.presentation.JokeCommunication
 import com.example.jokeapp.presentation.MainViewModel
+import com.example.jokeapp.presentation.State
+import com.example.jokeapp.presentation.StateCommunication
 import io.realm.Realm
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -27,7 +27,7 @@ class JokeApp : Application() {
             .build()
         val manageResources = ManageResources.Base(this)
         mainViewModel = MainViewModel(
-            JokeCommunication.Base(),
+            StateCommunication.Base(),
             Repository.Base(
                 CloudDataSource.Base(
                     retrofit.create(JokeService::class.java),
@@ -36,7 +36,9 @@ class JokeApp : Application() {
                 CacheDataSource.Base(object : RealmProvider {
                     override fun provideRealm() = Realm.getDefaultInstance()
                 }, manageResources)
-            )
+            ),
+            progress = State.Progress()
+
         )
     }
 }

@@ -18,7 +18,6 @@ interface Repository {
 
     suspend fun changeJokeStatus(): JokeUi
 
-
     class Base(
         private val cloudDataSource: CloudDataSource,
         private val cacheDataSource: CacheDataSource,

@@ -1,3 +1,4 @@
+/*
 package com.example.jokeapp.presentation
 
 import androidx.lifecycle.LifecycleOwner
@@ -186,4 +187,4 @@ private class FakeCommunication : JokeCommunication {
     override fun map(data: JokeUi) {
         this.data = data
     }
-}
+}*/
