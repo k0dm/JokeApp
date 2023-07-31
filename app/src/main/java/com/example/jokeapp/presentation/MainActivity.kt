@@ -38,8 +38,8 @@ class MainActivity : AppCompatActivity() {
             mainViewModel.changeJokeStatus()
         }
 
-        mainViewModel.init(object : JokeUiCallback {
-            override fun provideText(text: String)  {
+        val jokeUiCallback = object : JokeUiCallback {
+            override fun provideText(text: String) {
                 progressBar.visibility = View.GONE
                 getJokeButton.isEnabled = true
                 textView.text = text
@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity() {
             override fun provideResId(resId: Int) {
                 favoriteButton.setImageResource(resId)
             }
-        })
+        }
+        mainViewModel.observe(this) {
+            it.show(jokeUiCallback)
+        }
+
     }
 }

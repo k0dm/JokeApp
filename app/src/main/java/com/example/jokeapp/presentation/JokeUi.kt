@@ -20,12 +20,12 @@ interface JokeUi {
         }
     }
 
-    class Base(text: String, punchline: String) :
+    data class Base(private val text: String,private val  punchline: String) :
         Abstract(text, punchline, R.drawable.favorite_border_36)
 
-    class Favorite(text: String, punchline: String) :
+    data class Favorite(private val text: String, private val punchline: String) :
         Abstract(text, punchline, R.drawable.favorite_36)
 
-    class Failed(text: String) : Abstract(text, "", 0)
+    data class Failed(private val text: String) : Abstract(text, "", 0)
 
 }

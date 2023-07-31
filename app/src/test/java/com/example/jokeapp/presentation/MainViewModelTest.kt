@@ -1,5 +1,7 @@
 package com.example.jokeapp.presentation
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.example.jokeapp.data.DispatcherList
 import com.example.jokeapp.data.Joke
 import com.example.jokeapp.data.JokeResult
@@ -18,6 +20,7 @@ class MainViewModelTest {
     private lateinit var toFavoriteMapper: FakeMapper
     private lateinit var toBaseMapper: FakeMapper
     private lateinit var jokeUiCallback: FakeJokeUiCallback
+    private lateinit var communication: FakeCommunication
 
     @Before
     fun setUp() {
@@ -25,8 +28,14 @@ class MainViewModelTest {
         toFavoriteMapper = FakeMapper(true)
         toBaseMapper = FakeMapper(false)
         jokeUiCallback = FakeJokeUiCallback()
-        viewModel = MainViewModel(repository, toBaseMapper, toFavoriteMapper,FakeDispatchers())
-        viewModel.init(jokeUiCallback)
+        communication = FakeCommunication()
+        viewModel = MainViewModel(
+            communication,
+            repository,
+            toBaseMapper,
+            toFavoriteMapper,
+            FakeDispatchers()
+        )
     }
 
     @Test
@@ -38,10 +47,8 @@ class MainViewModelTest {
             errorMessage = "testErrorMessage"
         )
         viewModel.getJoke()
-        val expectedText = "fakeText_fakePunchline"
-        val expectedId = 10
-        assertEquals(expectedText, jokeUiCallback.provideTextList[0])
-        assertEquals(expectedId, jokeUiCallback.provideIconResIdList[0])
+        val expected = FakeJokeUi(10,"fakeText", "fakePunchline", false)
+        assertEquals(expected, communication.data)
     }
 
     @Test
@@ -53,10 +60,8 @@ class MainViewModelTest {
             errorMessage = "testErrorMessage"
         )
         viewModel.getJoke()
-        val expectedText = "fakeText_fakePunchline"
-        val expectedId = 11
-        assertEquals(expectedText, jokeUiCallback.provideTextList[0])
-        assertEquals(expectedId, jokeUiCallback.provideIconResIdList[0])
+        val expected = FakeJokeUi(10,"fakeText", "fakePunchline",  true)
+        assertEquals(expected, communication.data)
     }
 
     @Test
@@ -68,34 +73,32 @@ class MainViewModelTest {
             errorMessage = "testErrorMessage"
         )
         viewModel.getJoke()
-        val expectedText = "testErrorMessage\n"
-        val expectedId = 0
-        assertEquals(expectedText, jokeUiCallback.provideTextList[0])
-        assertEquals(expectedId, jokeUiCallback.provideIconResIdList[0])
+        val expected = JokeUi.Failed("testErrorMessage")
+        assertEquals(expected, communication.data)
     }
 
     @Test
     fun test_joke_status() {
         repository.returnChangeJokeStatus = FakeJokeUi(99, "fakeText", "fakePunchline", false)
         viewModel.changeJokeStatus()
-        val expectedText = "fakeText_fakePunchline"
-        val expectedId = 99
-        assertEquals(expectedText, jokeUiCallback.provideTextList[0])
-        assertEquals(expectedId, jokeUiCallback.provideIconResIdList[0])
+        val expected = FakeJokeUi(99,"fakeText", "fakePunchline",  false)
+        assertEquals(expected, communication.data)
     }
 }
+
 private class FakeHandleUi(private val dispatchers: DispatcherList) : HandleUi {
     override fun handle(
         coroutineScope: CoroutineScope,
         jokeUiCallback: JokeUiCallback,
         block: suspend () -> JokeUi
     ) {
-        coroutineScope.launch (dispatchers.io()){
+        coroutineScope.launch(dispatchers.io()) {
             block.invoke().show(jokeUiCallback)
         }
     }
 
 }
+
 private class FakeDispatchers : DispatcherList {
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -175,5 +178,12 @@ private class FakeRepository : Repository {
     var returnChangeJokeStatus: JokeUi? = null
     override suspend fun changeJokeStatus(): JokeUi {
         return returnChangeJokeStatus!!
+    }
+}
+
+private class FakeCommunication : JokeCommunication {
+    lateinit var data: JokeUi
+    override fun map(data: JokeUi) {
+        this.data = data
     }
 }

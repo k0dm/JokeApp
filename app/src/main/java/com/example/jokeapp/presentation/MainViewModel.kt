@@ -1,5 +1,7 @@
 package com.example.jokeapp.presentation
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jokeapp.data.DispatcherList
@@ -12,26 +14,19 @@ import kotlinx.coroutines.withContext
 
 
 class MainViewModel(
+    private val communication: Communication<JokeUi>,
     private val repository: Repository,
     private val toBaseUi: Joke.Mapper<JokeUi> = ToBaseUi(),
     private val toFavoriteUi: Joke.Mapper<JokeUi> = ToFavoriteUi(),
     dispatcherList: DispatcherList = DispatcherList.Base()
-) : BaseViewModel(dispatcherList) {
+) : BaseViewModel(dispatcherList), Observe<JokeUi>{
 
-    private var jokeUiCallback: JokeUiCallback = JokeUiCallback.Empty()
     private val blockUi: suspend (JokeUi) -> Unit = {
-        it.show(jokeUiCallback)
+        communication.map(it)
     }
-
-    fun init(jokeUiCallback: JokeUiCallback) {
-        this.jokeUiCallback = jokeUiCallback
+    override fun observe(owner: LifecycleOwner, observer: Observer<JokeUi>) {
+        communication.observe(owner, observer)
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        jokeUiCallback = JokeUiCallback.Empty()
-    }
-
     fun chooseFavorite(isChecked: Boolean) {
         repository.chooseFavorite(isChecked)
     }
@@ -50,6 +45,8 @@ class MainViewModel(
     fun changeJokeStatus() {
         handle({ repository.changeJokeStatus() }, blockUi)
     }
+
+
 }
 
 
