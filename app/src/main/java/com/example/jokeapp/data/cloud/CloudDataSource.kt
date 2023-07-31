@@ -1,5 +1,6 @@
 package com.example.jokeapp.data.cloud
 
+import com.example.jokeapp.data.JokeDataFetcher
 import com.example.jokeapp.data.JokeResult
 import com.example.jokeapp.presentation.Error
 import com.example.jokeapp.presentation.ManageResources
@@ -7,9 +8,7 @@ import com.example.jokeapp.presentation.ManageResources
 import java.lang.Exception
 import java.net.UnknownHostException
 
-interface CloudDataSource {
-
-    fun fetch(): JokeResult
+interface CloudDataSource: JokeDataFetcher<JokeResult> {
 
     class Base(
         private val service: JokeService,

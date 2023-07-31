@@ -8,9 +8,4 @@ interface JokeUiCallback {
 
     fun provideResId(@DrawableRes resId: Int)
 
-    class Empty : JokeUiCallback {
-
-        override fun provideText(string: String) = Unit
-        override fun provideResId(resId: Int) = Unit
-    }
 }

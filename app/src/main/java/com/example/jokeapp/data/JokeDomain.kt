@@ -1,6 +1,6 @@
 package com.example.jokeapp.data
 
-import com.example.jokeapp.data.cache.CacheDataSource
+import com.example.jokeapp.data.cache.ChangeJokeStatus
 import com.example.jokeapp.data.cache.JokeCache
 import com.example.jokeapp.presentation.JokeUi
 
@@ -53,7 +53,7 @@ class ToFavoriteUi : Joke.Mapper<JokeUi> {
     }
 }
 
-class Change(private val cacheDataSource: CacheDataSource) : Joke.Mapper<JokeUi> {
+class Change(private val cacheDataSource: ChangeJokeStatus) : Joke.Mapper<JokeUi> {
     override fun map(id: Int, text: String, punchLine: String, type: String): JokeUi {
         return cacheDataSource.addOrRemove(id, JokeDomain(id, text, punchLine, type))
     }

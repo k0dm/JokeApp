@@ -1,6 +1,7 @@
 package com.example.jokeapp.data.cache
 
 import com.example.jokeapp.data.Joke
+import com.example.jokeapp.data.JokeDataFetcher
 import com.example.jokeapp.data.JokeResult
 import com.example.jokeapp.data.ToBaseUi
 import com.example.jokeapp.data.ToCache
@@ -9,11 +10,7 @@ import com.example.jokeapp.presentation.JokeUi
 import com.example.jokeapp.presentation.ManageResources
 import com.example.jokeapp.presentation.Error
 
-interface CacheDataSource {
-
-    fun addOrRemove(id: Int, joke: Joke): JokeUi
-
-    fun fetch(): JokeResult
+interface CacheDataSource: JokeDataFetcher<JokeResult>, ChangeJokeStatus {
 
     class Base(private val realmProvider: RealmProvider, manageResources: ManageResources) : CacheDataSource {
         private val noCachedJoke by lazy { Error.NoCachedJoke(manageResources) }
