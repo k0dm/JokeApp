@@ -16,24 +16,12 @@ data class NewJokeCloud(
     private val type: String
 ) : Joke {
 
-    @JvmOverloads
-    constructor(
-        id: Int,
-        joke: String,
-        type: String
-    ) : this(id, joke, "", joke, type)
-
-    // Additional constructor to handle the "twopart" type joke
-    @JvmOverloads
-    constructor(
-        id: Int,
-        setup: String,
-        delivery: String,
-        type: String,
-
-        ) : this(id, setup, delivery, "", type)
-
     override fun <T> map(mapper: Joke.Mapper<T>): T {
-        return mapper.map(id, text, punchline, type)
+
+        return if (type == "twopart"){
+             mapper.map(id, text, punchline, type)
+        }else {
+            mapper.map(id, joke, "", type)
+        }
     }
 }

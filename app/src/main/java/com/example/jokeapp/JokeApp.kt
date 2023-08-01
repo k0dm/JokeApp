@@ -13,6 +13,8 @@ import com.example.jokeapp.presentation.MainViewModel
 import com.example.jokeapp.presentation.State
 import com.example.jokeapp.presentation.StateCommunication
 import io.realm.Realm
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -23,11 +25,17 @@ class JokeApp : Application() {
     override fun onCreate() {
         super.onCreate()
         Realm.init(this)
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val  client = OkHttpClient.Builder().addInterceptor(interceptor).build()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://google.com")
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val manageResources = ManageResources.Base(this)
+
         mainViewModel = MainViewModel(
             JokeInteractor.Base(
                 Repository.Base(
