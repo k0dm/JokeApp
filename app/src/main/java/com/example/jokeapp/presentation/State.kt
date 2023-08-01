@@ -1,9 +1,5 @@
 package com.example.jokeapp.presentation
 
-import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import com.example.jokeapp.presentation.view.ShowButton
 import com.example.jokeapp.presentation.view.ShowImageView
@@ -22,6 +18,29 @@ interface State {
     fun show(progress: ShowProgressBar, button: ShowButton)
     fun show(textView: ShowText, imageButton: ShowImageView)
 
+    abstract class Info(private val text: String, @DrawableRes private val iconResId: Int) :
+        State {
+
+        override fun show(
+            progress: ShowProgressBar,
+            button: ShowButton,
+            textView: ShowText,
+            imageButton: ShowImageView
+        ) {
+            show(progress, button)
+            show(textView, imageButton)
+        }
+
+        override fun show(progress: ShowProgressBar, button: ShowButton) {
+            progress.show(false)
+            button.show(true)
+        }
+
+        override fun show(textView: ShowText, imageButton: ShowImageView) {
+            textView.show(text)
+            imageButton.show(iconResId)
+        }
+    }
 
     class Progress : State {
         override fun show(
@@ -45,28 +64,10 @@ interface State {
 
     }
 
-    class Initial(private val text: String, @DrawableRes private val iconResId: Int) : State {
+    class Initial(text: String, @DrawableRes iconResId: Int) :
+        Info(text, iconResId)
 
-        override fun show(
-            progress: ShowProgressBar,
-            button: ShowButton,
-            textView: ShowText,
-            imageButton: ShowImageView
-        ) {
-            show(progress, button)
-            show(textView, imageButton)
-        }
-
-        override fun show(progress: ShowProgressBar, button: ShowButton) {
-            progress.show(false)
-            button.show(true)
-        }
-
-        override fun show(textView: ShowText, imageButton: ShowImageView) {
-            textView.show(text)
-            imageButton.show(iconResId)
-        }
-
-    }
+    class Failed(text: String, @DrawableRes iconResId: Int) :
+        Info(text, iconResId)
 }
 

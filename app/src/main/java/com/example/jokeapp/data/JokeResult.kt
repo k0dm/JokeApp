@@ -1,7 +1,6 @@
 package com.example.jokeapp.data
 
 import com.example.jokeapp.presentation.Error
-import java.lang.Exception
 import java.lang.IllegalStateException
 
 interface JokeResult : Joke {

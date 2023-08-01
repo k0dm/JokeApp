@@ -25,6 +25,10 @@ interface JokeUi {
     data class Favorite(private val text: String, private val punchline: String) :
         Abstract(text, punchline, R.drawable.favorite_36)
 
-    data class Failed(private val text: String) : Abstract(text, "", 0)
+    data class Failed(private val text: String) : Abstract(text, "", 0) {
+        override fun show(communication: Communication<State>) = with(communication) {
+            this.map(State.Failed("$text", 0))
+        }
+    }
 
 }

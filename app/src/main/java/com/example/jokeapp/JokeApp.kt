@@ -7,6 +7,7 @@ import com.example.jokeapp.data.cache.RealmProvider
 import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.presentation.ManageResources
 import com.example.jokeapp.data.cloud.JokeService
+import com.example.jokeapp.interactor.JokeInteractor
 import com.example.jokeapp.presentation.MainViewModel
 import com.example.jokeapp.presentation.State
 import com.example.jokeapp.presentation.StateCommunication
@@ -27,16 +28,18 @@ class JokeApp : Application() {
             .build()
         val manageResources = ManageResources.Base(this)
         mainViewModel = MainViewModel(
-            StateCommunication.Base(),
-            Repository.Base(
-                CloudDataSource.Base(
-                    retrofit.create(JokeService::class.java),
-                    manageResources
-                ),
-                CacheDataSource.Base(object : RealmProvider {
-                    override fun provideRealm() = Realm.getDefaultInstance()
-                }, manageResources)
+            JokeInteractor.Base(
+                Repository.Base(
+                    CloudDataSource.Base(
+                        retrofit.create(JokeService::class.java),
+                        manageResources
+                    ),
+                    CacheDataSource.Base(object : RealmProvider {
+                        override fun provideRealm() = Realm.getDefaultInstance()
+                    }, manageResources)
+                )
             ),
+            StateCommunication.Base(),
             progress = State.Progress()
 
         )

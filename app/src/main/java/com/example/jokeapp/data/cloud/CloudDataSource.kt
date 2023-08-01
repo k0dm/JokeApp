@@ -27,7 +27,7 @@ interface CloudDataSource: JokeDataFetcher<JokeResult> {
                 } else {
                     serviceUnavailable
                 }
-                 JokeResult.Failure(error)
+                JokeResult.Failure(error)
             }
         }
     }

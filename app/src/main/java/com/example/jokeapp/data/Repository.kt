@@ -1,14 +1,7 @@
 package com.example.jokeapp.data
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.jokeapp.data.cache.CacheDataSource
 import com.example.jokeapp.data.cloud.CloudDataSource
-import com.example.jokeapp.presentation.JokeUi
-import com.example.jokeapp.presentation.Error
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 interface Repository {
 
@@ -16,12 +9,12 @@ interface Repository {
 
     fun chooseFavorite(fromCache: Boolean)
 
-    suspend fun changeJokeStatus(): JokeUi
+    suspend fun changeJokeStatus(): JokeResult
 
     class Base(
         private val cloudDataSource: CloudDataSource,
         private val cacheDataSource: CacheDataSource,
-        private val change: Joke.Mapper<JokeUi> = Change(cacheDataSource)
+        private val change: Joke.Mapper<JokeResult> = Change(cacheDataSource)
     ) : Repository {
 
         private var jokeCached: Joke? = null
@@ -49,7 +42,7 @@ interface Repository {
             getFromCache = fromCache
         }
 
-        override suspend fun changeJokeStatus(): JokeUi{
+        override suspend fun changeJokeStatus(): JokeResult {
             return jokeCached!!.map(change)
         }
     }

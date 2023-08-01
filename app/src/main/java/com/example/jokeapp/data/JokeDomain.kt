@@ -23,11 +23,17 @@ data class JokeDomain(
     private val text: String,
     private val punchLine: String,
     private val type: String
-): Joke{
+) : Joke {
     override fun <T> map(mapper: Joke.Mapper<T>): T {
         return mapper.map(id, text, punchLine, type)
     }
 
+}
+
+class ToDomain : Joke.Mapper<JokeDomain> {
+    override fun map(id: Int, text: String, punchLine: String, type: String): JokeDomain {
+        return JokeDomain(id, text, punchLine, type)
+    }
 }
 
 class ToCache : Joke.Mapper<JokeCache> {
@@ -53,8 +59,8 @@ class ToFavoriteUi : Joke.Mapper<JokeUi> {
     }
 }
 
-class Change(private val cacheDataSource: ChangeJokeStatus) : Joke.Mapper<JokeUi> {
-    override fun map(id: Int, text: String, punchLine: String, type: String): JokeUi {
+class Change(private val cacheDataSource: ChangeJokeStatus) : Joke.Mapper<JokeResult> {
+    override fun map(id: Int, text: String, punchLine: String, type: String): JokeResult {
         return cacheDataSource.addOrRemove(id, JokeDomain(id, text, punchLine, type))
     }
 }

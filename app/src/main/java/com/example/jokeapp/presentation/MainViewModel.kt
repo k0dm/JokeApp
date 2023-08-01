@@ -9,15 +9,14 @@ import com.example.jokeapp.data.Joke
 import com.example.jokeapp.data.Repository
 import com.example.jokeapp.data.ToBaseUi
 import com.example.jokeapp.data.ToFavoriteUi
+import com.example.jokeapp.interactor.JokeInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
 class MainViewModel(
+    private val interactor: JokeInteractor,
     private val communication: Communication<State>,
-    private val repository: Repository,
-    private val toBaseUi: Joke.Mapper<JokeUi> = ToBaseUi(),
-    private val toFavoriteUi: Joke.Mapper<JokeUi> = ToFavoriteUi(),
     private val progress: State,
     dispatcherList: DispatcherList = DispatcherList.Base()
 ) : BaseViewModel(dispatcherList), Observe<State>{
@@ -29,23 +28,18 @@ class MainViewModel(
         communication.observe(owner, observer)
     }
     fun chooseFavorite(isChecked: Boolean) {
-        repository.chooseFavorite(isChecked)
+        interactor.getFavoriteJokes(isChecked)
     }
 
     fun getJoke() {
         communication.map(progress)
         handle({
-            val result = repository.fetch()
-            if (result.isSuccessful()) {
-                result.map(if (result.isFavorite()) toFavoriteUi else toBaseUi)
-            } else {
-                JokeUi.Failed(result.errorMessage())
-            }
+            interactor.getJoke()
         }, blockUi)
     }
 
     fun changeJokeStatus() {
-        handle({ repository.changeJokeStatus() }, blockUi)
+        handle({ interactor.changeJokeStatus() }, blockUi)
     }
 }
 
