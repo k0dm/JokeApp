@@ -5,14 +5,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.jokeapp.data.DispatcherList
-import com.example.jokeapp.data.Joke
-import com.example.jokeapp.data.Repository
-import com.example.jokeapp.data.ToBaseUi
-import com.example.jokeapp.data.ToFavoriteUi
 import com.example.jokeapp.interactor.JokeInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 class MainViewModel(
     private val interactor: JokeInteractor,
@@ -21,8 +16,8 @@ class MainViewModel(
     dispatcherList: DispatcherList = DispatcherList.Base()
 ) : BaseViewModel(dispatcherList), Observe<State>{
 
-    private val blockUi: suspend (JokeUi) -> Unit = {
-        it.show(communication)
+    private val blockUi: suspend (JokeUi) -> Unit = { jokeUi->
+        jokeUi.show(communication)
     }
     override fun observe(owner: LifecycleOwner, observer: Observer<State>) {
         communication.observe(owner, observer)

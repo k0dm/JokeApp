@@ -6,7 +6,7 @@ import com.example.jokeapp.presentation.JokeUi
 
 interface Joke {
 
-    fun <T> map(mapper: Joke.Mapper<T>): T
+    fun <T> map(mapper: Mapper<T>): T
 
     interface Mapper<T> {
         fun map(

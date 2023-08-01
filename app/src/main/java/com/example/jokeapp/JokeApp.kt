@@ -4,9 +4,10 @@ import android.app.Application
 import com.example.jokeapp.data.Repository
 import com.example.jokeapp.data.cache.CacheDataSource
 import com.example.jokeapp.data.cache.RealmProvider
+import com.example.jokeapp.data.cloud.BaseJokeService
 import com.example.jokeapp.data.cloud.CloudDataSource
+import com.example.jokeapp.data.cloud.NewJokeService
 import com.example.jokeapp.presentation.ManageResources
-import com.example.jokeapp.data.cloud.JokeService
 import com.example.jokeapp.interactor.JokeInteractor
 import com.example.jokeapp.presentation.MainViewModel
 import com.example.jokeapp.presentation.State
@@ -23,15 +24,15 @@ class JokeApp : Application() {
         super.onCreate()
         Realm.init(this)
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://official-joke-api.appspot.com/")
+            .baseUrl("https://google.com")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val manageResources = ManageResources.Base(this)
         mainViewModel = MainViewModel(
             JokeInteractor.Base(
                 Repository.Base(
-                    CloudDataSource.Base(
-                        retrofit.create(JokeService::class.java),
+                    CloudDataSource.New(
+                        retrofit.create(NewJokeService::class.java),
                         manageResources
                     ),
                     CacheDataSource.Base(object : RealmProvider {

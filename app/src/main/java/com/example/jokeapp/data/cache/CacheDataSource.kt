@@ -29,7 +29,7 @@ interface CacheDataSource: JokeDataFetcher<JokeResult>, ChangeJokeStatus {
             }
         }
 
-        override fun fetch(): JokeResult {
+        override suspend fun fetch(): JokeResult {
             realmProvider.provideRealm().use {
                 val jokes = it.where(JokeCache::class.java).findAll()
                 if (jokes.isEmpty()) {
