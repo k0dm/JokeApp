@@ -22,4 +22,7 @@ interface Error {
 
     class NoCachedJoke(manageResources: ManageResources) :
             Abstract(manageResources, R.string.no_cached_joke)
+
+    class GenericError(manageResources: ManageResources):
+            Abstract(manageResources, R.string.generic_error)
 }

@@ -1,10 +1,10 @@
 package com.example.jokeapp.presentation
 
 import androidx.annotation.DrawableRes
-import com.example.jokeapp.presentation.view.ShowButton
-import com.example.jokeapp.presentation.view.ShowImageView
-import com.example.jokeapp.presentation.view.ShowProgressBar
-import com.example.jokeapp.presentation.view.ShowText
+import com.example.jokeapp.views.ShowButton
+import com.example.jokeapp.views.ShowImageView
+import com.example.jokeapp.views.ShowProgressBar
+import com.example.jokeapp.views.ShowText
 
 interface State {
 

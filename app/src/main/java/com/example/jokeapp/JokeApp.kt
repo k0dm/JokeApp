@@ -4,14 +4,14 @@ import android.app.Application
 import com.example.jokeapp.data.Repository
 import com.example.jokeapp.data.cache.CacheDataSource
 import com.example.jokeapp.data.cache.RealmProvider
-import com.example.jokeapp.data.cloud.BaseJokeService
 import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.data.cloud.NewJokeService
+import com.example.jokeapp.domain.JokeFailureHandler
 import com.example.jokeapp.presentation.ManageResources
-import com.example.jokeapp.interactor.JokeInteractor
+import com.example.jokeapp.domain.JokeInteractor
 import com.example.jokeapp.presentation.MainViewModel
 import com.example.jokeapp.presentation.State
-import com.example.jokeapp.presentation.StateCommunication
+import com.example.jokeapp.domain.StateCommunication
 import io.realm.Realm
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -28,7 +28,7 @@ class JokeApp : Application() {
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
-        val  client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
         val retrofit = Retrofit.Builder()
             .baseUrl("https://google.com")
             .client(client)
@@ -39,14 +39,12 @@ class JokeApp : Application() {
         mainViewModel = MainViewModel(
             JokeInteractor.Base(
                 Repository.Base(
-                    CloudDataSource.New(
-                        retrofit.create(NewJokeService::class.java),
-                        manageResources
-                    ),
+                    CloudDataSource.New(retrofit.create(NewJokeService::class.java)),
                     CacheDataSource.Base(object : RealmProvider {
                         override fun provideRealm() = Realm.getDefaultInstance()
-                    }, manageResources)
-                )
+                    })
+                ),
+                JokeFailureHandler.Factory(manageResources)
             ),
             StateCommunication.Base(),
             progress = State.Progress()

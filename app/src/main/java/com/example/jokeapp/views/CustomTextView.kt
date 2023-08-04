@@ -1,8 +1,7 @@
-package com.example.jokeapp.presentation.view
+package com.example.jokeapp.views
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 
 class CustomTextView @JvmOverloads constructor(

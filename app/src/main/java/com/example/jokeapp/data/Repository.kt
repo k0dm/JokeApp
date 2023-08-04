@@ -1,49 +1,53 @@
 package com.example.jokeapp.data
 
 import com.example.jokeapp.data.cache.CacheDataSource
+import com.example.jokeapp.data.cache.ChangeJoke
 import com.example.jokeapp.data.cloud.CloudDataSource
+import com.example.jokeapp.core.Change
+import com.example.jokeapp.data.cache.CachedJoke
+import com.example.jokeapp.data.cache.JokeCache
+import java.lang.Exception
 
 interface Repository {
 
-    suspend fun fetch(): JokeResult
+    suspend fun fetch(): JokeDataModel
 
     fun chooseFavorite(fromCache: Boolean)
 
-    suspend fun changeJokeStatus(): JokeResult
+    suspend fun changeJokeStatus(): JokeDataModel
 
     class Base(
         private val cloudDataSource: CloudDataSource,
         private val cacheDataSource: CacheDataSource,
-        private val change: Joke.Mapper<JokeResult> = Change(cacheDataSource)
+        private val change: Change = Change(cacheDataSource),
+        private val jokeCached: CachedJoke = CachedJoke.Base()
+
     ) : Repository {
 
-        private var jokeCached: Joke? = null
         private var getFromCache = false
 
-        override suspend fun fetch(): JokeResult {
-            val jokeResult = if (getFromCache) {
-                cacheDataSource.fetch()
-            } else {
-                cloudDataSource.fetch()
-            }
+        override suspend fun fetch(): JokeDataModel {
 
-            jokeCached = if (jokeResult.isSuccessful()) {
-                jokeResult.map(object : Joke.Mapper<Joke> {
-                    override fun map(id: Int, text: String, punchLine: String, type: String) =
-                        JokeDomain(id, text, punchLine, type)
-                })
-            } else {
-                null
+            return try {
+                val jokeDataModel = if (getFromCache) {
+                    cacheDataSource.fetch()
+                } else {
+                    cloudDataSource.fetch()
+                }
+                jokeCached.save(jokeDataModel)
+                jokeDataModel
+            } catch (exception: Exception) {
+                jokeCached.clear()
+                throw exception
             }
-            return jokeResult
         }
 
         override fun chooseFavorite(fromCache: Boolean) {
             getFromCache = fromCache
         }
 
-        override suspend fun changeJokeStatus(): JokeResult {
-            return jokeCached!!.map(change)
+        override suspend fun changeJokeStatus(): JokeDataModel {
+            return jokeCached!!.change(cacheDataSource)
         }
     }
 }

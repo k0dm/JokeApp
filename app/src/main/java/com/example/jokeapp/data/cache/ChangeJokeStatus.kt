@@ -1,9 +1,8 @@
 package com.example.jokeapp.data.cache
 
-import com.example.jokeapp.data.Joke
-import com.example.jokeapp.data.JokeResult
-import com.example.jokeapp.presentation.JokeUi
+import com.example.jokeapp.data.JokeDataModel
+import com.example.jokeapp.core.Joke
 
 interface ChangeJokeStatus {
-    fun addOrRemove(id: Int, joke: Joke): JokeResult
+    fun addOrRemove(id: Int, jokeDataModel: Joke): JokeDataModel
 }

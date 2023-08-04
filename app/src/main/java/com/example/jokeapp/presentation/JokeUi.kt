@@ -2,6 +2,7 @@ package com.example.jokeapp.presentation
 
 import androidx.annotation.DrawableRes
 import com.example.jokeapp.R
+import com.example.jokeapp.domain.Communication
 
 
 interface JokeUi {
@@ -27,7 +28,7 @@ interface JokeUi {
 
     data class Failed(private val text: String) : Abstract(text, "", 0) {
         override fun show(communication: Communication<State>) = with(communication) {
-            this.map(State.Failed("$text", 0))
+            this.map(State.Failed(text, 0))
         }
     }
 

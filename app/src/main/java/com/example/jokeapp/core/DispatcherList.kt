@@ -1,4 +1,4 @@
-package com.example.jokeapp.data
+package com.example.jokeapp.core
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

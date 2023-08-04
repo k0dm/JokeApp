@@ -1,46 +1,39 @@
 package com.example.jokeapp.data.cloud
 
-import com.example.jokeapp.data.Joke
 import com.example.jokeapp.data.JokeDataFetcher
-import com.example.jokeapp.data.JokeResult
-import com.example.jokeapp.presentation.Error
-import com.example.jokeapp.presentation.ManageResources
+import com.example.jokeapp.data.JokeDataModel
+import com.example.jokeapp.core.Joke
+import com.example.jokeapp.core.ToDataIsNotFavorite
+import com.example.jokeapp.domain.NoConnectionException
+import com.example.jokeapp.domain.ServiceUnavailableException
 import retrofit2.Call
-
 import java.lang.Exception
 import java.net.UnknownHostException
 
-interface CloudDataSource : JokeDataFetcher<JokeResult> {
+interface CloudDataSource : JokeDataFetcher {
 
-    abstract class Abstract<T>(manageResources: ManageResources) : CloudDataSource {
-
-        private val noConnection by lazy { Error.NoConnection(manageResources) }
-        private val serviceUnavailable by lazy { Error.ServiceUnavailable(manageResources) }
+    abstract class Abstract<T: Joke>(private val mapper: ToDataIsNotFavorite) : CloudDataSource {
 
         protected abstract fun getJokeCloud(): Call<T>
-        override suspend fun fetch(): JokeResult {
-            return try {
-                val response = getJokeCloud().execute()
-                JokeResult.Success(response.body()!! as Joke, false)
-            } catch (e: Exception) {
-                val error = if (e is UnknownHostException) {
-                    noConnection
-                } else {
-                    serviceUnavailable
+        override suspend fun fetch(): JokeDataModel {
+            try{
+                val responseBody = getJokeCloud().execute().body()
+                return responseBody!!.map(mapper)
+            }catch (e: Exception) {
+                if (e is UnknownHostException) {
+                    throw NoConnectionException()
+                }else {
+                    throw ServiceUnavailableException()
                 }
-                JokeResult.Failure(error)
             }
         }
     }
 
-    class Base(private val service: BaseJokeService, manageResources: ManageResources) :
-        Abstract<JokeCloud>(manageResources) {
+    class Base(private val service: BaseJokeService) : Abstract<JokeCloud>(ToDataIsNotFavorite()) {
         override fun getJokeCloud() = service.getJoke()
     }
 
-    class New(private val service: NewJokeService, manageResources: ManageResources) :
-        Abstract<NewJokeCloud>(manageResources) {
+    class New(private val service: NewJokeService) : Abstract<NewJokeCloud>(ToDataIsNotFavorite()) {
         override fun getJokeCloud() = service.getJoke()
-
     }
 }

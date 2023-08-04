@@ -1,7 +1,7 @@
 package com.example.jokeapp.data.cloud
 
-import com.example.jokeapp.data.Joke
-import com.example.jokeapp.data.JokeDomain
+import com.example.jokeapp.core.Joke
+import com.example.jokeapp.core.Mapper
 import com.google.gson.annotations.SerializedName
 
 data class JokeCloud(
@@ -15,7 +15,7 @@ data class JokeCloud(
     private val type: String
 ) : Joke {
 
-    override fun <T> map(mapper: Joke.Mapper<T>): T {
+    override fun <T> map(mapper: Mapper<T>): T {
         return mapper.map(id, text, punchLine, type)
     }
 }

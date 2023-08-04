@@ -1,10 +1,9 @@
-package com.example.jokeapp.presentation.view
+package com.example.jokeapp.views
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ProgressBar
-import androidx.appcompat.widget.AppCompatTextView
 
 class CustomProgressBar @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

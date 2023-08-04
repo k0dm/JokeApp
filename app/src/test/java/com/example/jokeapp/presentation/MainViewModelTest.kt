@@ -3,9 +3,9 @@ package com.example.jokeapp.presentation
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.example.jokeapp.data.DispatcherList
-import com.example.jokeapp.data.Joke
-import com.example.jokeapp.data.JokeResult
+import com.example.jokeapp.data.core.DispatcherList
+import com.example.jokeapp.domain.Joke
+import com.example.jokeapp.domain.JokeResult
 import com.example.jokeapp.data.Repository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -1,8 +1,9 @@
-package com.example.jokeapp.presentation
+package com.example.jokeapp.domain
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.example.jokeapp.presentation.State
 
 interface Communication<T : Any> : Observe<T> {
 

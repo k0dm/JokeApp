@@ -1,4 +1,4 @@
-package com.example.jokeapp.presentation.view
+package com.example.jokeapp.views
 
 interface Show<T> {
     fun show(arg: T)

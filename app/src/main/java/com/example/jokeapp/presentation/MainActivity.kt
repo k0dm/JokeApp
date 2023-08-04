@@ -3,17 +3,13 @@ package com.example.jokeapp.presentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.CheckBox
-import android.widget.ImageButton
-import android.widget.ProgressBar
-import android.widget.TextView
 import com.example.jokeapp.JokeApp
 import com.example.jokeapp.R
-import com.example.jokeapp.presentation.view.CustomButton
-import com.example.jokeapp.presentation.view.CustomImageButton
-import com.example.jokeapp.presentation.view.CustomProgressBar
-import com.example.jokeapp.presentation.view.CustomTextView
+import com.example.jokeapp.views.CustomButton
+import com.example.jokeapp.views.CustomImageButton
+import com.example.jokeapp.views.CustomProgressBar
+import com.example.jokeapp.views.CustomTextView
 
 class MainActivity : AppCompatActivity() {
 

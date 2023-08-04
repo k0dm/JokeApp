@@ -5,4 +5,5 @@
     <string name="service_unavailable">Service unavailable!</string>
     <string name="show_favorite_joke">show favorite joke</string>
     <string name="no_cached_joke">No favorite joke! Add one by heart icon</string>
+    <string name="generic_error">Something went wrong!</string>
 </resources>
