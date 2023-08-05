@@ -19,7 +19,6 @@ interface Repository {
     class Base(
         private val cloudDataSource: CloudDataSource,
         private val cacheDataSource: CacheDataSource,
-        private val change: Change = Change(cacheDataSource),
         private val jokeCached: CachedJoke = CachedJoke.Base()
 
     ) : Repository {
@@ -47,7 +46,7 @@ interface Repository {
         }
 
         override suspend fun changeJokeStatus(): JokeDataModel {
-            return jokeCached!!.change(cacheDataSource)
+            return jokeCached.change(cacheDataSource)
         }
     }
 }

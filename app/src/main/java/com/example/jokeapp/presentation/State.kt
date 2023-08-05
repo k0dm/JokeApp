@@ -67,7 +67,7 @@ interface State {
     class Initial(text: String, @DrawableRes iconResId: Int) :
         Info(text, iconResId)
 
-    class Failed(text: String, @DrawableRes iconResId: Int) :
+    data class Failed(private val text: String, @DrawableRes private val iconResId: Int) :
         Info(text, iconResId)
 }
 

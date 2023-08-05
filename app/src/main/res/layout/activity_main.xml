@@ -27,7 +27,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:layout_gravity="center"
-
             tools:text="it is a joke ahahhaha" />
 
         <com.example.jokeapp.views.CustomImageButton

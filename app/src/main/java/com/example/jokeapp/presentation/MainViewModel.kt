@@ -12,12 +12,13 @@ import com.example.jokeapp.domain.Communication
 import com.example.jokeapp.domain.JokeDomain
 import com.example.jokeapp.domain.JokeInteractor
 import com.example.jokeapp.domain.Observe
+import com.example.jokeapp.domain.StateCommunication
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val interactor: JokeInteractor,
-    private val communication: Communication<State>,
+    private val communication: StateCommunication,
     private val progress: State,
     private val toBaseUi: Mapper<JokeUi> = ToBaseUi(),
     private val toFavoriteUi: Mapper<JokeUi> = ToFavoriteUi(),
@@ -26,14 +27,14 @@ class MainViewModel(
 
     private val blockUi: suspend (JokeDomain) -> Unit = { jokeDomain ->
         val jokeUi = if (jokeDomain.isSuccessful()) {
-                jokeDomain.map(
-                    if (jokeDomain.isFavorite()) {
-                        toFavoriteUi
-                    } else toBaseUi
-                )
-            } else {
-                JokeUi.Failed(jokeDomain.errorMessage())
-            }
+            jokeDomain.map(
+                if (jokeDomain.isFavorite()) {
+                    toFavoriteUi
+                } else toBaseUi
+            )
+        } else {
+            JokeUi.Failed(jokeDomain.errorMessage())
+        }
         jokeUi.show(communication)
     }
 
@@ -57,9 +58,11 @@ class MainViewModel(
     }
 }
 
+
 abstract class BaseViewModel(
     private val dispatcherList: DispatcherList
 ) : ViewModel() {
+
     fun <T> handle(
         blockIo: suspend () -> T,
         blockUi: suspend (T) -> Unit

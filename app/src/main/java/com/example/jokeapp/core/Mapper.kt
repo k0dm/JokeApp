@@ -19,7 +19,7 @@ interface Mapper<T> {
 
 abstract class DataIsFavorite(private val isFavorite: Boolean) : Mapper<JokeDataModel> {
     override fun map(id: Int, text: String, punchLine: String, type: String): JokeDataModel {
-        return JokeDataModel(id, text, punchLine, type,isFavorite)
+        return JokeDataModel.Base(id, text, punchLine, type,isFavorite)
     }
 }
 
@@ -52,6 +52,6 @@ class ToFavoriteUi : Mapper<JokeUi> {
 
 class Change(private val cacheDataSource: ChangeJokeStatus) : Mapper<JokeDataModel> {
     override fun map(id: Int, text: String, punchLine: String, type: String): JokeDataModel {
-        return cacheDataSource.addOrRemove(id, JokeDataModel(id, text, punchLine, type))
+        return cacheDataSource.addOrRemove(id, JokeDataModel.Base(id, text, punchLine, type))
     }
 }
