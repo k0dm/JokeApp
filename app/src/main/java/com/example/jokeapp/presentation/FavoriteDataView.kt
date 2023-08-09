@@ -15,8 +15,8 @@ class FavoriteDataView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private lateinit var checkBox: CheckBox
-    private lateinit var actionButton: CustomButton
+    private var checkBox: CheckBox
+    private var actionButton: CustomButton
     private val favoriteButton: CustomImageButton
     private val textView: CustomTextView
     private val progressBar: CustomProgressBar
@@ -46,17 +46,32 @@ class FavoriteDataView @JvmOverloads constructor(
         }
     }
 
-    fun listenChanges(block: (checked: Boolean) -> Unit) =
+    fun linkWith(commonViewModel: CommonViewModel) {
+
+            listenChanges { isChecked ->
+                commonViewModel.chooseFavorites(isChecked)
+            }
+
+            handleFavoriteButton {
+                commonViewModel.changeItemStatus()
+            }
+
+            handleActionButton {
+                commonViewModel.getItem()
+            }
+    }
+
+    private fun listenChanges(block: (checked: Boolean) -> Unit) =
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             block.invoke(isChecked)
         }
 
-    fun handleFavoriteButton(block: () -> Unit) =
+    private fun handleFavoriteButton(block: () -> Unit) =
         favoriteButton.setOnClickListener {
             block.invoke()
         }
 
-    fun handleActionButton(block: () -> Unit) =
+    private fun handleActionButton(block: () -> Unit) =
         actionButton.setOnClickListener {
             block.invoke()
         }

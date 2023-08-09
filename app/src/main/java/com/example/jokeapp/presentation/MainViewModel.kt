@@ -8,34 +8,33 @@ import com.example.jokeapp.core.DispatcherList
 import com.example.jokeapp.core.Mapper
 import com.example.jokeapp.core.ToBaseUi
 import com.example.jokeapp.core.ToFavoriteUi
-import com.example.jokeapp.domain.Communication
-import com.example.jokeapp.domain.JokeDomain
-import com.example.jokeapp.domain.JokeInteractor
+import com.example.jokeapp.domain.CommonDomain
+import com.example.jokeapp.domain.CommonInteractor
 import com.example.jokeapp.domain.Observe
 import com.example.jokeapp.domain.StateCommunication
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainViewModel(
-    private val interactor: JokeInteractor,
+    private val interactor: CommonInteractor,
     private val communication: StateCommunication,
     private val progress: State,
-    private val toBaseUi: Mapper<JokeUi> = ToBaseUi(),
-    private val toFavoriteUi: Mapper<JokeUi> = ToFavoriteUi(),
+    private val toBaseUi: Mapper<CommonUi> = ToBaseUi(),
+    private val toFavoriteUi: Mapper<CommonUi> = ToFavoriteUi(),
     dispatcherList: DispatcherList = DispatcherList.Base()
 ) : BaseViewModel(dispatcherList), Observe<State> {
 
-    private val blockUi: suspend (JokeDomain) -> Unit = { jokeDomain ->
-        val jokeUi = if (jokeDomain.isSuccessful()) {
+    private val blockUi: suspend (CommonDomain) -> Unit = { jokeDomain ->
+        val commonUi = if (jokeDomain.isSuccessful()) {
             jokeDomain.map(
                 if (jokeDomain.isFavorite()) {
                     toFavoriteUi
                 } else toBaseUi
             )
         } else {
-            JokeUi.Failed(jokeDomain.errorMessage())
+            CommonUi.Failed(jokeDomain.errorMessage())
         }
-        jokeUi.show(communication)
+        commonUi.show(communication)
     }
 
     override fun observe(owner: LifecycleOwner, observer: Observer<State>) {
@@ -43,18 +42,18 @@ class MainViewModel(
     }
 
     fun chooseFavorite(isChecked: Boolean) {
-        interactor.getFavoriteJokes(isChecked)
+        interactor.chooseFavorite(isChecked)
     }
 
     fun getJoke() {
         communication.map(progress)
         handle({
-            interactor.getJoke()
+            interactor.getItem()
         }, blockUi)
     }
 
     fun changeJokeStatus() {
-        handle({ interactor.changeJokeStatus() }, blockUi)
+        handle({ interactor.changeItemStatus() }, blockUi)
     }
 }
 

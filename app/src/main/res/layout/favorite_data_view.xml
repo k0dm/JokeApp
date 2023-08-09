@@ -37,6 +37,7 @@
     <com.example.jokeapp.views.CustomProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true" />

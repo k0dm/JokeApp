@@ -2,15 +2,14 @@ package com.example.jokeapp.presentation
 
 
 import com.example.jokeapp.core.DispatcherList
-import com.example.jokeapp.core.Joke
 import com.example.jokeapp.core.Mapper
-import com.example.jokeapp.data.JokeDataModel
+import com.example.jokeapp.data.CommonDataModel
 import com.example.jokeapp.data.Repository
-import com.example.jokeapp.data.cache.ChangeJokeStatus
+import com.example.jokeapp.data.cache.ChangeItemStatus
 import com.example.jokeapp.domain.Communication
-import com.example.jokeapp.domain.JokeDomain
-import com.example.jokeapp.domain.JokeFailureHandler
-import com.example.jokeapp.domain.JokeInteractor
+import com.example.jokeapp.domain.CommonDomain
+import com.example.jokeapp.domain.FailureHandler
+import com.example.jokeapp.domain.CommonInteractor
 import com.example.jokeapp.domain.StateCommunication
 import com.example.jokeapp.views.ShowButton
 import com.example.jokeapp.views.ShowImageView
@@ -26,7 +25,7 @@ import java.lang.IllegalStateException
 class MainViewModelTest {
     private lateinit var viewModel: MainViewModel
     private lateinit var repository: FakeRepository
-    private lateinit var interactor: JokeInteractor
+    private lateinit var interactor: CommonInteractor
     private lateinit var toFavoriteMapper: FakeMapper
     private lateinit var toBaseMapper: FakeMapper
     private lateinit var communication: FakeCommunication
@@ -34,7 +33,7 @@ class MainViewModelTest {
     @Before
     fun setUp() {
         repository = FakeRepository()
-        interactor = FakeInteractor(repository, FakeJokeFailureHandler())
+        interactor = FakeInteractor(repository, FakeFailureHandler())
         toFavoriteMapper = FakeMapper(true)
         toBaseMapper = FakeMapper(false)
         communication = FakeCommunication()
@@ -108,19 +107,19 @@ class MainViewModelTest {
         }
     }
 
-    private class FakeMapper(var toFavorite: Boolean) : Mapper<JokeUi> {
+    private class FakeMapper(var toFavorite: Boolean) : Mapper<CommonUi> {
 
-        override fun map(id: Int, text: String, punchLine: String, type: String): JokeUi {
-            return FakeJokeUi(id, text, punchLine, toFavorite)
+        override fun map(id: Int, text: String, punchLine: String): CommonUi {
+            return FakeCommonUi(id, text, punchLine, toFavorite)
         }
     }
 
-    private data class FakeJokeUi(
+    private data class FakeCommonUi(
         val id: Int,
         val text: String,
         val punchLine: String,
         val isFavorite: Boolean
-    ) : JokeUi {
+    ) : CommonUi {
 
         override fun show(communication: Communication<State>) {
             communication.map(FakeState("$text\n$punchLine", id, isFavorite))
@@ -129,31 +128,31 @@ class MainViewModelTest {
 
     private class FakeInteractor(
         private val repository: FakeRepository,
-        private val jokeFailureHandler: JokeFailureHandler
-    ) : JokeInteractor {
-        override suspend fun getJoke(): JokeDomain {
+        private val failureHandler: FailureHandler
+    ) : CommonInteractor {
+        override suspend fun getItem(): CommonDomain {
             return try {
                 val resultJoke = repository.fetch()
-                FakeJokeDomain.Success(resultJoke)
+                FakeCommonDomain.Success(resultJoke)
             } catch (e: Exception) {
-                FakeJokeDomain.Fail(jokeFailureHandler.handle(e))
+                FakeCommonDomain.Fail(failureHandler.handle(e))
             }
         }
 
-        override suspend fun changeJokeStatus(): JokeDomain {
+        override suspend fun changeItemStatus(): CommonDomain {
 
             val resultJoke = repository.changeJokeStatus()
-            return FakeJokeDomain.Success(resultJoke)
+            return FakeCommonDomain.Success(resultJoke)
 
         }
 
-        override fun getFavoriteJokes(favorites: Boolean) {
+        override fun chooseFavorite(favorites: Boolean) {
             repository.chooseFavorite(favorites)
         }
 
     }
 
-    private class FakeJokeFailureHandler : JokeFailureHandler {
+    private class FakeFailureHandler : FailureHandler {
         override fun handle(e: Exception): Error = FakeError()
     }
 
@@ -170,10 +169,10 @@ class MainViewModelTest {
         override fun ui() = dispatcher
     }
 
-    private interface FakeJokeDomain : JokeDomain {
+    private interface FakeCommonDomain : CommonDomain {
         data class Success(
-            private val joke: JokeDataModel,
-        ) : FakeJokeDomain {
+            private val joke: CommonDataModel,
+        ) : FakeCommonDomain {
             override fun isFavorite() = joke.isFavorite()
 
             override fun isSuccessful() = true
@@ -183,7 +182,7 @@ class MainViewModelTest {
             override fun <T> map(mapper: Mapper<T>): T = joke.map(mapper)
         }
 
-        data class Fail(private val error: Error) : FakeJokeDomain {
+        data class Fail(private val error: Error) : FakeCommonDomain {
             override fun isSuccessful(): Boolean = false
 
             override fun errorMessage(): String = error.message()
@@ -200,12 +199,12 @@ class MainViewModelTest {
         private val punchline: String,
         private val type: String,
         private val isFavorite: Boolean = false
-    ) : JokeDataModel {
+    ) : CommonDataModel {
 
-        override fun <T> map(mapper: Mapper<T>): T = mapper.map(id, text, punchline, type)
+        override fun <T> map(mapper: Mapper<T>): T = mapper.map(id, text, punchline)
 
-        override suspend fun change(changeJokeStatus: ChangeJokeStatus): JokeDataModel =
-            changeJokeStatus.addOrRemove(id, this)
+        override suspend fun change(changeItemStatus: ChangeItemStatus): CommonDataModel =
+            changeItemStatus.addOrRemove(id, this)
 
 
         override fun isFavorite(): Boolean = isFavorite
@@ -213,9 +212,9 @@ class MainViewModelTest {
     }
 
     private class FakeRepository : Repository {
-        var returnFetchJokeResult: JokeDataModel? = null
+        var returnFetchJokeResult: CommonDataModel? = null
         var isSuccessful = true
-        override suspend fun fetch(): JokeDataModel {
+        override suspend fun fetch(): CommonDataModel {
             return if (isSuccessful) {
                 returnFetchJokeResult!!
 
@@ -228,8 +227,8 @@ class MainViewModelTest {
             TODO("Not yet implemented")
         }
 
-        var returnChangeJokeStatus: JokeDataModel? = null
-        override suspend fun changeJokeStatus(): JokeDataModel {
+        var returnChangeJokeStatus: CommonDataModel? = null
+        override suspend fun changeJokeStatus(): CommonDataModel {
             return returnChangeJokeStatus!!
         }
     }

@@ -5,4 +5,4 @@ interface DataFetcher<T> {
     suspend fun fetch(): T
 }
 
-interface JokeDataFetcher: DataFetcher<JokeDataModel>
+interface ItemDataFetcher: DataFetcher<CommonDataModel>

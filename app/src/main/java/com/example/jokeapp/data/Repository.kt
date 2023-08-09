@@ -1,31 +1,28 @@
 package com.example.jokeapp.data
 
 import com.example.jokeapp.data.cache.CacheDataSource
-import com.example.jokeapp.data.cache.ChangeJoke
 import com.example.jokeapp.data.cloud.CloudDataSource
-import com.example.jokeapp.core.Change
-import com.example.jokeapp.data.cache.CachedJoke
-import com.example.jokeapp.data.cache.JokeCache
+import com.example.jokeapp.data.cache.CachedItem
 import java.lang.Exception
 
 interface Repository {
 
-    suspend fun fetch(): JokeDataModel
+    suspend fun fetch(): CommonDataModel
 
     fun chooseFavorite(fromCache: Boolean)
 
-    suspend fun changeJokeStatus(): JokeDataModel
+    suspend fun changeJokeStatus(): CommonDataModel
 
     class Base(
         private val cloudDataSource: CloudDataSource,
         private val cacheDataSource: CacheDataSource,
-        private val jokeCached: CachedJoke = CachedJoke.Base()
+        private val itemCached: CachedItem = CachedItem.Base()
 
     ) : Repository {
 
         private var getFromCache = false
 
-        override suspend fun fetch(): JokeDataModel {
+        override suspend fun fetch(): CommonDataModel {
 
             return try {
                 val jokeDataModel = if (getFromCache) {
@@ -33,10 +30,10 @@ interface Repository {
                 } else {
                     cloudDataSource.fetch()
                 }
-                jokeCached.save(jokeDataModel)
+                itemCached.save(jokeDataModel)
                 jokeDataModel
             } catch (exception: Exception) {
-                jokeCached.clear()
+                itemCached.clear()
                 throw exception
             }
         }
@@ -45,8 +42,8 @@ interface Repository {
             getFromCache = fromCache
         }
 
-        override suspend fun changeJokeStatus(): JokeDataModel {
-            return jokeCached.change(cacheDataSource)
+        override suspend fun changeJokeStatus(): CommonDataModel {
+            return itemCached.change(cacheDataSource)
         }
     }
 }

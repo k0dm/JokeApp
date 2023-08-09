@@ -6,25 +6,32 @@ import com.example.jokeapp.data.cache.CacheDataSource
 import com.example.jokeapp.data.cache.RealmProvider
 import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.data.cloud.NewJokeService
-import com.example.jokeapp.domain.JokeFailureHandler
+import com.example.jokeapp.data.cloud.QuoteService
+import com.example.jokeapp.domain.CommonInteractor
+import com.example.jokeapp.domain.FailureHandler
+import com.example.jokeapp.presentation.CommonViewModel
 import com.example.jokeapp.presentation.ManageResources
-import com.example.jokeapp.domain.JokeInteractor
-import com.example.jokeapp.presentation.MainViewModel
-import com.example.jokeapp.presentation.State
-import com.example.jokeapp.domain.StateCommunication
+import io.realm.DynamicRealm
 import io.realm.Realm
+import io.realm.RealmConfiguration
+import io.realm.kotlin.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
 class JokeApp : Application() {
 
-    lateinit var mainViewModel: MainViewModel
+    lateinit var jokeViewModel: CommonViewModel.Joke
+    lateinit var quoteViewModel: CommonViewModel.Quote
 
     override fun onCreate() {
         super.onCreate()
+
         Realm.init(this)
+        val configuration = RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
+        Realm.setDefaultConfiguration(configuration)
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
@@ -34,21 +41,30 @@ class JokeApp : Application() {
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
         val manageResources = ManageResources.Base(this)
 
-        mainViewModel = MainViewModel(
-            JokeInteractor.Base(
+        val realmProvider = object : RealmProvider {
+            override fun provideRealm() = Realm.getDefaultInstance()
+        }
+        val failureHandler = FailureHandler.Factory(manageResources)
+        jokeViewModel = CommonViewModel.Joke(
+            CommonInteractor.Base(
                 Repository.Base(
-                    CloudDataSource.New(retrofit.create(NewJokeService::class.java)),
-                    CacheDataSource.Base(object : RealmProvider {
-                        override fun provideRealm() = Realm.getDefaultInstance()
-                    })
+                    CloudDataSource.NewJoke(retrofit.create(NewJokeService::class.java)),
+                    CacheDataSource.Joke(realmProvider)
                 ),
-                JokeFailureHandler.Factory(manageResources)
+                failureHandler
             ),
-            StateCommunication.Base(),
-            progress = State.Progress()
-
+        )
+        quoteViewModel = CommonViewModel.Quote(
+            CommonInteractor.Base(
+                Repository.Base(
+                    CloudDataSource.Quote(retrofit.create(QuoteService::class.java)),
+                    CacheDataSource.Quote(realmProvider)
+                ),
+                failureHandler
+            )
         )
     }
 }

@@ -1,6 +1,6 @@
 package com.example.jokeapp.core
 
-interface Joke {
+interface CommonItem {
 
     fun <T> map(mapper: Mapper<T>): T
 }

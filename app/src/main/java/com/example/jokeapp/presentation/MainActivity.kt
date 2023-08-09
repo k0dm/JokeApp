@@ -7,29 +7,24 @@ import com.example.jokeapp.R
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mainViewModel: MainViewModel
+    private lateinit var jokeViewModel: CommonViewModel.Joke
+    private lateinit var quoteViewModel: CommonViewModel.Quote
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mainViewModel = (application as JokeApp).mainViewModel
+        jokeViewModel = (application as JokeApp).jokeViewModel
+        quoteViewModel = (application as JokeApp).quoteViewModel
 
-        val favoriteDataView = findViewById<FavoriteDataView>(R.id.jokeFavoriteDataView).apply {
+        val jokeFavoriteDataView = findViewById<FavoriteDataView>(R.id.jokeFavoriteDataView)
+        val quoteFavoriteDataView = findViewById<FavoriteDataView>(R.id.quoteFavoriteDataView)
+        jokeFavoriteDataView.linkWith(jokeViewModel)
+        quoteFavoriteDataView.linkWith(quoteViewModel)
 
-            listenChanges { isChecked ->
-                mainViewModel.chooseFavorite(isChecked)
-            }
-
-            handleFavoriteButton {
-                mainViewModel.changeJokeStatus()
-            }
-
-            handleActionButton {
-                mainViewModel.getJoke()
-            }
+        jokeViewModel.observe(this){state->
+            jokeFavoriteDataView.show(state)
         }
-
-        mainViewModel.observe(this) { state ->
-            favoriteDataView.show(state)
+        quoteViewModel.observe(this){state->
+            quoteFavoriteDataView.show(state)
         }
     }
 }

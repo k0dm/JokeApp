@@ -5,7 +5,7 @@ import com.example.jokeapp.R
 import com.example.jokeapp.domain.Communication
 
 
-interface JokeUi {
+interface CommonUi {
 
     fun show(communication: Communication<State>)
     abstract class Abstract(
@@ -13,7 +13,7 @@ interface JokeUi {
         private val punchline: String,
         @DrawableRes
         private val iconResId: Int
-    ) : JokeUi {
+    ) : CommonUi {
 
         override fun show(communication: Communication<State>) = with(communication) {
             this.map(State.Initial("$text\n$punchline", iconResId))
@@ -31,5 +31,4 @@ interface JokeUi {
             this.map(State.Failed(text, 0))
         }
     }
-
 }

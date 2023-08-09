@@ -5,12 +5,14 @@ import com.example.jokeapp.core.Mapper
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
-open class JokeCache : RealmObject(), CommonItem {
+open class QuoteCache: RealmObject(), CommonItem  {
+
     @PrimaryKey
     var id: Int = -1
-    var text: String = ""
-    var punchline: String = ""
+    var author: String = ""
+    var context: String = ""
+
     override fun <T> map(mapper: Mapper<T>): T {
-        return mapper.map(id, text, punchline)
+        return mapper.map(id, author, context)
     }
 }

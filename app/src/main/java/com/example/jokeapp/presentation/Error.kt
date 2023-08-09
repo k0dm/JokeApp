@@ -20,8 +20,8 @@ interface Error {
     class ServiceUnavailable(manageResources: ManageResources) :
         Abstract(manageResources, R.string.service_unavailable)
 
-    class NoCachedJoke(manageResources: ManageResources) :
-            Abstract(manageResources, R.string.no_cached_joke)
+    class NoCachedItem(manageResources: ManageResources) :
+            Abstract(manageResources, R.string.no_cached_item)
 
     class GenericError(manageResources: ManageResources):
             Abstract(manageResources, R.string.generic_error)
