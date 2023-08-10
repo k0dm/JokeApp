@@ -11,9 +11,9 @@ data class JokeCloud(
     private val text: String,
     @SerializedName("punchline")
     private val punchLine: String,
-) : CommonItem {
+) : CommonItem<Int> {
 
-    override fun <T> map(mapper: Mapper<T>): T {
+    override fun <T> map(mapper: Mapper<Int,T>): T {
         return mapper.map(id, text, punchLine)
     }
 }

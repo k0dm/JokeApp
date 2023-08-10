@@ -11,8 +11,8 @@ class QuoteCloud(
     private val author: String,
     @SerializedName("content")
     private val content: String
-) : CommonItem {
-    override fun <T> map(mapper: Mapper<T>): T {
-        return mapper.map(System.currentTimeMillis().toInt(), author, content)
+) : CommonItem<String> {
+    override fun <T> map(mapper: Mapper<String, T>): T {
+        return mapper.map(id, author, content)
     }
 }

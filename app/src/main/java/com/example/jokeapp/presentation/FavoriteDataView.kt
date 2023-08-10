@@ -11,7 +11,7 @@ import com.example.jokeapp.views.CustomImageButton
 import com.example.jokeapp.views.CustomProgressBar
 import com.example.jokeapp.views.CustomTextView
 
-class FavoriteDataView @JvmOverloads constructor(
+class FavoriteDataView<E> @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
@@ -46,7 +46,7 @@ class FavoriteDataView @JvmOverloads constructor(
         }
     }
 
-    fun linkWith(commonViewModel: CommonViewModel) {
+    fun linkWith(commonViewModel: CommonViewModel<E>) {
 
             listenChanges { isChecked ->
                 commonViewModel.chooseFavorites(isChecked)

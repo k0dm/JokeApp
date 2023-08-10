@@ -1,7 +1,7 @@
 package com.example.jokeapp.core
 
-interface CommonItem {
+interface CommonItem<E> {
 
-    fun <T> map(mapper: Mapper<T>): T
+    fun <T>map(mapper: Mapper<E, T>): T
 }
 

@@ -15,8 +15,8 @@ class MainActivity : AppCompatActivity() {
         jokeViewModel = (application as JokeApp).jokeViewModel
         quoteViewModel = (application as JokeApp).quoteViewModel
 
-        val jokeFavoriteDataView = findViewById<FavoriteDataView>(R.id.jokeFavoriteDataView)
-        val quoteFavoriteDataView = findViewById<FavoriteDataView>(R.id.quoteFavoriteDataView)
+        val jokeFavoriteDataView = findViewById<FavoriteDataView<Int>>(R.id.jokeFavoriteDataView)
+        val quoteFavoriteDataView = findViewById<FavoriteDataView<String>>(R.id.quoteFavoriteDataView)
         jokeFavoriteDataView.linkWith(jokeViewModel)
         quoteFavoriteDataView.linkWith(quoteViewModel)
 

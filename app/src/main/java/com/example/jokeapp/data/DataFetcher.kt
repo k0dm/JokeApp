@@ -1,8 +1,8 @@
 package com.example.jokeapp.data
 
-interface DataFetcher<T> {
+interface DataFetcher<E> {
 
-    suspend fun fetch(): T
+    suspend fun fetch(): CommonDataModel<E>
 }
 
-interface ItemDataFetcher: DataFetcher<CommonDataModel>
+//interface ItemDataFetcher<E>: DataFetcher<CommonDataModel<E>>

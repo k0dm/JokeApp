@@ -5,20 +5,20 @@ import com.example.jokeapp.data.Repository
 
 import java.lang.Exception
 
-interface CommonInteractor {
+interface CommonInteractor<E> {
 
-    suspend fun getItem(): CommonDomain
+    suspend fun getItem(): CommonDomain<E>
 
-    suspend fun changeItemStatus(): CommonDomain
+    suspend fun changeItemStatus(): CommonDomain<E>
 
     fun chooseFavorite(favorites: Boolean)
 
-    class Base(
-        private val repository: Repository,
+    class Base<E>(
+        private val repository: Repository<E>,
         private val failureHandler: FailureHandler
-    ) : CommonInteractor {
+    ) : CommonInteractor<E> {
 
-        override suspend fun getItem(): CommonDomain {
+        override suspend fun getItem(): CommonDomain<E> {
             return  try {
                 val resultItem = repository.fetch()
                  CommonDomain.Success(resultItem)
@@ -27,7 +27,7 @@ interface CommonInteractor {
             }
         }
 
-        override suspend fun changeItemStatus(): CommonDomain {
+        override suspend fun changeItemStatus(): CommonDomain<E> {
             return try {
                 val resultJoke = repository.changeJokeStatus()
                 return CommonDomain.Success(resultJoke)

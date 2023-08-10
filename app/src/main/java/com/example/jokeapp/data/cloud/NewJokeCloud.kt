@@ -15,9 +15,9 @@ data class NewJokeCloud(
     private val joke: String,
     @SerializedName("type")
     private val type: String
-) : CommonItem {
+) : CommonItem<Int> {
 
-    override fun <T> map(mapper: Mapper<T>): T {
+    override fun <T> map(mapper: Mapper<Int,T>): T {
         return if (type == "twopart") {
             mapper.map(id, text, punchline)
         } else {
