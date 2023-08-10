@@ -13,6 +13,7 @@ import com.example.jokeapp.domain.CommonInteractor
 import com.example.jokeapp.domain.StateCommunication
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.AssertionError
 
 interface CommonViewModel<E> {
     fun getItem()
@@ -20,16 +21,15 @@ interface CommonViewModel<E> {
     fun chooseFavorites(favorites: Boolean)
     fun observe(owner: LifecycleOwner, observer: Observer<State>)
 
-    class Joke(
-        private val interactor: CommonInteractor<Int>,
+    abstract class Abstract<E>(
+        private val interactor: CommonInteractor<E>,
         private val communication: StateCommunication = StateCommunication.Base(),
         private val progress: State = State.Progress(),
-        private val toBaseUi: Mapper<Int,CommonUi> = ToBaseUi(),
-        private val toFavoriteUi: Mapper<Int,CommonUi> = ToFavoriteUi(),
+        private val toBaseUi: Mapper<E, CommonUi> = ToBaseUi(),
+        private val toFavoriteUi: Mapper<E, CommonUi> = ToFavoriteUi(),
         dispatcherList: DispatcherList = DispatcherList.Base()
-    ) : CommonViewModel<Int>, BaseViewModel(dispatcherList) {
-
-        private val blockUi: suspend (CommonDomain<Int>) -> Unit = { jokeDomain ->
+    ) : CommonViewModel<E>, BaseViewModel(dispatcherList) {
+        private val blockUi: suspend (CommonDomain<E>) -> Unit = { jokeDomain ->
             val commonUi = if (jokeDomain.isSuccessful()) {
                 jokeDomain.map(if (jokeDomain.isFavorite()) toFavoriteUi else toBaseUi)
             } else {
@@ -58,49 +58,10 @@ interface CommonViewModel<E> {
         override fun observe(owner: LifecycleOwner, observer: Observer<State>) {
             communication.observe(owner, observer)
         }
-
     }
 
-    class Quote(
-        private val interactor: CommonInteractor<String>,
-        private val communication: StateCommunication = StateCommunication.Base(),
-        private val progress: State = State.Progress(),
-        private val toBaseUi: Mapper<String,CommonUi> = ToBaseUi(),
-        private val toFavoriteUi: Mapper<String,CommonUi> = ToFavoriteUi(),
-        dispatcherList: DispatcherList = DispatcherList.Base()
-    ) : CommonViewModel<String>, BaseViewModel(dispatcherList) {
-
-        private val blockUi: suspend (CommonDomain<String>) -> Unit = { jokeDomain ->
-            val commonUi = if (jokeDomain.isSuccessful()) {
-                jokeDomain.map(if (jokeDomain.isFavorite()) toFavoriteUi else toBaseUi)
-            } else {
-                CommonUi.Failed(jokeDomain.errorMessage())
-            }
-            commonUi.show(communication)
-        }
-
-        override fun getItem() {
-            communication.map(progress)
-            handle({
-                interactor.getItem()
-            }, blockUi)
-        }
-
-        override fun changeItemStatus() {
-            handle({
-                interactor.changeItemStatus()
-            }, blockUi)
-        }
-
-        override fun chooseFavorites(favorites: Boolean) {
-            interactor.chooseFavorite(favorites)
-        }
-
-        override fun observe(owner: LifecycleOwner, observer: Observer<State>) {
-            communication.observe(owner, observer)
-        }
-
-    }
+    class Joke(interactor: CommonInteractor<Int>) : Abstract<Int>(interactor)
+    class Quote(interactor: CommonInteractor<String>) : Abstract<String>(interactor)
 }
 
 abstract class BaseViewModel(
