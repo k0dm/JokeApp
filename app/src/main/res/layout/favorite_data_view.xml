@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.example.jokeapp.views.CustomTextView
+        <com.example.jokeapp.presentation.views.CustomTextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             tools:text="it is a joke ahahhaha" />
 
-        <com.example.jokeapp.views.CustomImageButton
+        <com.example.jokeapp.presentation.views.CustomImageButton
             android:id="@+id/favoriteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
     </LinearLayout>
 
 
-    <com.example.jokeapp.views.CustomProgressBar
+    <com.example.jokeapp.presentation.views.CustomProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:visibility="invisible"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:indeterminate="true" />
 
-    <com.example.jokeapp.views.CustomButton
+    <com.example.jokeapp.presentation.views.CustomButton
         android:backgroundTint="@color/teal_200"
         style="@style/Widget.AppCompat.Button.Colored"
         android:textSize="16sp"
@@ -50,6 +50,4 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="@string/get_joke" />
-
-
 </merge>

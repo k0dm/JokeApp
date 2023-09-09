@@ -17,7 +17,7 @@ data class NewJokeCloud(
     private val type: String
 ) : CommonItem<Int> {
 
-    override fun <T> map(mapper: Mapper<Int,T>): T {
+    override fun <T> map(mapper: Mapper<Int, T>): T {
         return if (type == "twopart") {
             mapper.map(id, text, punchline)
         } else {

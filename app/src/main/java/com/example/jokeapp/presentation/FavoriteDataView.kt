@@ -6,10 +6,10 @@ import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import com.example.jokeapp.R
-import com.example.jokeapp.views.CustomButton
-import com.example.jokeapp.views.CustomImageButton
-import com.example.jokeapp.views.CustomProgressBar
-import com.example.jokeapp.views.CustomTextView
+import com.example.jokeapp.presentation.views.CustomButton
+import com.example.jokeapp.presentation.views.CustomImageButton
+import com.example.jokeapp.presentation.views.CustomProgressBar
+import com.example.jokeapp.presentation.views.CustomTextView
 
 class FavoriteDataView<E> @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -54,10 +54,12 @@ class FavoriteDataView<E> @JvmOverloads constructor(
 
             handleFavoriteButton {
                 commonViewModel.changeItemStatus()
+              //  commonViewModel.getItemList()
             }
 
             handleActionButton {
                 commonViewModel.getItem()
+             //   commonViewModel.getItemList()
             }
     }
 

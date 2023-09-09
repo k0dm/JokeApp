@@ -11,8 +11,13 @@ import com.example.jokeapp.data.DataFetcher
 import com.example.jokeapp.domain.NoCachedException
 import io.realm.Realm
 import io.realm.RealmObject
+import io.realm.RealmResults
 
 interface CacheDataSource<E, T> : DataFetcher<E>, ChangeItemStatus<E> {
+
+    suspend fun fetchDataList(): List<CommonDataModel<E>>
+
+    suspend fun delete(id: E) : Boolean
 
     abstract class Abstract<E, T : RealmObject>(
         private val realmProvider: RealmProvider,
@@ -22,7 +27,7 @@ interface CacheDataSource<E, T> : DataFetcher<E>, ChangeItemStatus<E> {
     ) : CacheDataSource<E, T> {
 
         protected abstract val dbClass: Class<T>
-        protected abstract fun findRealObject(realm: Realm, id: E ) : T?
+        protected abstract fun findRealObject(realm: Realm, id: E): T?
 
         override fun addOrRemove(id: E, commonItemDataModel: CommonItem<E>): CommonDataModel<E> {
             realmProvider.provideRealm().use {
@@ -42,23 +47,43 @@ interface CacheDataSource<E, T> : DataFetcher<E>, ChangeItemStatus<E> {
             }
         }
 
-        override suspend fun fetch(): CommonDataModel<E> {
+        override suspend fun delete(id: E): Boolean {
             realmProvider.provideRealm().use {
-                val itemCaches = it.where(dbClass).findAll()
+                val item = findRealObject(it, id)
+                return if (item == null) {
+                    false
+                }else {
+                    val r = it.executeTransaction{
+                        item.deleteFromRealm()
+                    }
+                    true
+                }
+            }
+        }
+
+        override suspend fun fetch() = getRealmData().random().map(toDataModelIsFavorite)
+
+        override suspend fun fetchDataList() = getRealmData().map { it.map(toDataModelIsFavorite) }
+
+        private fun getRealmData(): List<CommonItem<E>> {
+            realmProvider.provideRealm().use { realm ->
+                val itemCaches = realm.where(dbClass).findAll()
                 if (itemCaches.isEmpty()) {
                     throw NoCachedException()
                 }
-                return ((it.copyFromRealm(itemCaches.random())) as CommonItem<E>).map(
-                    toDataModelIsFavorite
-                )
+                val list = arrayListOf<CommonItem<E>>()
+                itemCaches.map { item ->
+                    list.add(realm.copyFromRealm(item) as CommonItem<E>)
+                }
+                return list
             }
         }
     }
 
     class Joke(
         realmProvider: RealmProvider,
-        mapper: Mapper<Int,JokeCache> = ToCacheJoke()
-    ) : Abstract<Int,JokeCache>(realmProvider, mapper) {
+        mapper: Mapper<Int, JokeCache> = ToCacheJoke()
+    ) : Abstract<Int, JokeCache>(realmProvider, mapper) {
         override val dbClass: Class<JokeCache>
             get() = JokeCache::class.java
 
@@ -69,7 +94,7 @@ interface CacheDataSource<E, T> : DataFetcher<E>, ChangeItemStatus<E> {
 
     class Quote(
         realmProvider: RealmProvider,
-        mapper: Mapper<String,QuoteCache> = ToCacheQuote()
+        mapper: Mapper<String, QuoteCache> = ToCacheQuote()
     ) : Abstract<String, QuoteCache>(realmProvider, mapper) {
         override val dbClass: Class<QuoteCache>
             get() = QuoteCache::class.java

@@ -11,6 +11,7 @@ import com.example.jokeapp.domain.CommonInteractor
 import com.example.jokeapp.domain.FailureHandler
 import com.example.jokeapp.presentation.CommonViewModel
 import com.example.jokeapp.presentation.ManageResources
+import com.example.jokeapp.presentation.StateCommunication
 import io.realm.DynamicRealm
 import io.realm.Realm
 import io.realm.RealmConfiguration
@@ -25,6 +26,8 @@ class JokeApp : Application() {
 
     lateinit var jokeViewModel: CommonViewModel.Joke
     lateinit var quoteViewModel: CommonViewModel.Quote
+    lateinit var jokeCommunication: StateCommunication<Int>
+    lateinit var quoteCommunication: StateCommunication<String>
 
     override fun onCreate() {
         super.onCreate()
@@ -48,6 +51,9 @@ class JokeApp : Application() {
             override fun provideRealm() = Realm.getDefaultInstance()
         }
         val failureHandler = FailureHandler.Factory(manageResources)
+        jokeCommunication = StateCommunication.Base()
+        quoteCommunication = StateCommunication.Base()
+
         jokeViewModel = CommonViewModel.Joke(
             CommonInteractor.Base(
                 Repository.Base(
@@ -56,6 +62,7 @@ class JokeApp : Application() {
                 ),
                 failureHandler
             ),
+            jokeCommunication
         )
         quoteViewModel = CommonViewModel.Quote(
             CommonInteractor.Base(
@@ -64,7 +71,8 @@ class JokeApp : Application() {
                     CacheDataSource.Quote(realmProvider)
                 ),
                 failureHandler
-            )
+            ),
+            quoteCommunication
         )
     }
 }

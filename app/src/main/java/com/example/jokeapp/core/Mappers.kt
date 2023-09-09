@@ -1,6 +1,5 @@
 package com.example.jokeapp.core
 
-import android.view.animation.AnimationUtils
 import com.example.jokeapp.data.CommonDataModel
 import com.example.jokeapp.data.cache.JokeCache
 import com.example.jokeapp.data.cache.QuoteCache
@@ -34,7 +33,7 @@ class ToCacheJoke : Mapper<Int, JokeCache> {
     }
 }
 
-class ToCacheQuote : Mapper<String,QuoteCache> {
+class ToCacheQuote : Mapper<String, QuoteCache> {
     override fun map(id: String, firstText: String, secondText: String): QuoteCache {
         return QuoteCache().apply {
             this.id = id
@@ -44,14 +43,14 @@ class ToCacheQuote : Mapper<String,QuoteCache> {
     }
 }
 
-class ToBaseUi<E> : Mapper<E, CommonUi> {
-    override fun map(id: E, firstText: String, secondText: String): CommonUi {
-        return CommonUi.Base(firstText, secondText)
+class ToBaseUi<E> : Mapper<E, CommonUi<E>> {
+    override fun map(id: E, firstText: String, secondText: String): CommonUi<E> {
+        return CommonUi.Base<E>(id, firstText, secondText)
     }
 }
 
-class ToFavoriteUi<E> : Mapper<E, CommonUi> {
-    override fun map(id: E, firstText: String, secondText: String): CommonUi {
-        return CommonUi.Favorite(firstText, secondText)
+class ToFavoriteUi<E> : Mapper<E, CommonUi<E>> {
+    override fun map(id: E, firstText: String, secondText: String): CommonUi<E> {
+        return CommonUi.Favorite<E>(id, firstText, secondText)
     }
 }

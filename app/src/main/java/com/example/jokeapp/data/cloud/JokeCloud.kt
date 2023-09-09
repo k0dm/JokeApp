@@ -13,7 +13,7 @@ data class JokeCloud(
     private val punchLine: String,
 ) : CommonItem<Int> {
 
-    override fun <T> map(mapper: Mapper<Int,T>): T {
+    override fun <T> map(mapper: Mapper<Int, T>): T {
         return mapper.map(id, text, punchLine)
     }
 }

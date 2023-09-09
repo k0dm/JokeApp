@@ -8,6 +8,9 @@ import java.lang.Exception
 interface Repository<E> {
 
     suspend fun fetch(): CommonDataModel<E>
+    suspend fun fetchDataList(): List<CommonDataModel<E>>
+
+    suspend fun delete(id: E)
 
     fun chooseFavorite(fromCache: Boolean)
 
@@ -38,6 +41,11 @@ interface Repository<E> {
             }
         }
 
+        override suspend fun fetchDataList() = cacheDataSource.fetchDataList()
+        override suspend fun delete(id: E) {
+            cacheDataSource.delete(id)
+        }
+
         override fun chooseFavorite(fromCache: Boolean) {
             getFromCache = fromCache
         }
@@ -45,5 +53,6 @@ interface Repository<E> {
         override suspend fun changeJokeStatus(): CommonDataModel<E> {
             return itemCached.change(cacheDataSource)
         }
+
     }
 }
