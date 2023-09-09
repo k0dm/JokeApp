@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity() {
                     Snackbar.LENGTH_SHORT
                 ).setAction(R.string.yes) {
                     jokeViewModel.changeItemStatus(id)
-                    val position = jokeCommunication.removeItem(id)
-                    adapter.update(Pair(false, position))
+                  // val position = jokeCommunication.removeItem(id)
+                  //  adapter.update(Pair(false, position))
                 }.show()
             }
         }, jokeCommunication)

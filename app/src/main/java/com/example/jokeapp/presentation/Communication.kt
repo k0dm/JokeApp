@@ -3,6 +3,7 @@ package com.example.jokeapp.presentation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DiffUtil
 
 interface Communication<T : Any, E> : ListCommunication<E>, ListProvider<E> {
 
@@ -10,15 +11,23 @@ interface Communication<T : Any, E> : ListCommunication<E>, ListProvider<E> {
 
     fun observe(owner: LifecycleOwner, observer: Observer<T>)
 
+    fun getDiffResult(): DiffUtil.DiffResult
+
     abstract class Abstract<T : Any, E>(
         private val liveData: MutableLiveData<T> = MutableLiveData(),
         private val listLiveData: MutableLiveData<ArrayList<CommonUi<E>>> = MutableLiveData()
     ) : Communication<T, E> {
+
+        private lateinit var diffResult: DiffUtil.DiffResult
+
+        override fun getDiffResult() = diffResult
         override fun map(data: T) {
             liveData.value = data
         }
 
         override fun mapList(list: List<CommonUi<E>>) {
+            val callback = CommonDiffUtilCallback(listLiveData.value ?: emptyList(), list)
+            diffResult = DiffUtil.calculateDiff(callback)
             listLiveData.value = ArrayList(list)
         }
 

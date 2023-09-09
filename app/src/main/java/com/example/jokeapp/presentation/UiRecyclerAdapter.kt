@@ -13,15 +13,11 @@ class UiRecyclerAdapter<E>(
     private val communication: StateCommunication<E>
 ) : RecyclerView.Adapter<UiRecyclerAdapter.CommonDataViewHolder<E>>() {
 
-    fun update() = notifyDataSetChanged()
-
-    fun update(pair: Pair<Boolean, Int>) {
-        if (pair.first){
-            notifyItemInserted(pair.second)
-        }else {
-            notifyItemRemoved(pair.second)
-        }
+    fun update() {
+        val result = communication.getDiffResult()
+        result.dispatchUpdatesTo(this)
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommonDataViewHolder<E> {
         val empty = viewType == 0
         val view = LayoutInflater.from(parent.context).inflate(
