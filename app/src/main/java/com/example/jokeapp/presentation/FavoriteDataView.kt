@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.LinearLayout
+import androidx.annotation.StringRes
 import com.example.jokeapp.R
 import com.example.jokeapp.presentation.views.CustomButton
 import com.example.jokeapp.presentation.views.CustomImageButton
@@ -61,6 +62,8 @@ class FavoriteDataView<E> @JvmOverloads constructor(
                 commonViewModel.getItem()
              //   commonViewModel.getItemList()
             }
+
+        commonViewModel.getItemList()
     }
 
     private fun listenChanges(block: (checked: Boolean) -> Unit) =
@@ -81,4 +84,8 @@ class FavoriteDataView<E> @JvmOverloads constructor(
     fun show(state: State) {
         state.show(progressBar, actionButton, textView, favoriteButton)
     }
+
+    fun checkBoxText(@StringRes id: Int) = checkBox.setText(id)
+
+    fun actionButtonText(@StringRes id: Int) = actionButton.setText(id)
 }

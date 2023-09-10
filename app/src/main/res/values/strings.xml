@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">JokeApp</string>
+    <string name="app_name">Joke &amp; Quotes</string>
+    <string name="jokes">Jokes</string>
+    <string name="quotes">Quotes</string>
     <string name="get_joke">Get joke</string>
     <string name="get_quote">Get quote</string>
     <string name="show_favorite_joke">Show favorite joke</string>
