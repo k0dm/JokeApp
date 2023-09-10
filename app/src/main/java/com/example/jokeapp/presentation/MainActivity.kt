@@ -1,11 +1,10 @@
 package com.example.jokeapp.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.viewpager2.widget.ViewPager2
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.jokeapp.R
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,12 +12,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
         val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
 
-        viewPager.adapter = PagerAdapter(this)
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = getString(if (position == 0) R.string.jokes else R.string.quotes)
-        }.attach()
+        show(JokesFragment())
+        val tabChosen: (Boolean) -> Unit = { jokesChosen ->
+            if (jokesChosen) {
+                show(JokesFragment())
+            } else {
+                show(QuoteFragment())
+            }
+        }
+        tabLayout.addOnTabSelectedListener(TabListener(tabChosen))
+    }
+
+    private fun  show(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .commit()
     }
 }
