@@ -1,17 +1,17 @@
 package com.example.jokeapp.data.cache
 
-import com.example.jokeapp.data.CommonDataModel
 import com.example.jokeapp.core.CommonItem
 import com.example.jokeapp.core.Mapper
 import com.example.jokeapp.core.ToCacheJoke
 import com.example.jokeapp.core.ToCacheQuote
 import com.example.jokeapp.core.ToDataIsFavorite
 import com.example.jokeapp.core.ToDataIsNotFavorite
+import com.example.jokeapp.core.data.cache.RealmProvider
+import com.example.jokeapp.data.CommonDataModel
 import com.example.jokeapp.data.DataFetcher
 import com.example.jokeapp.domain.NoCachedException
 import io.realm.Realm
 import io.realm.RealmObject
-import io.realm.RealmResults
 
 interface CacheDataSource<E, T> : DataFetcher<E>, ChangeItemStatus<E> {
 
@@ -53,7 +53,7 @@ interface CacheDataSource<E, T> : DataFetcher<E>, ChangeItemStatus<E> {
                 return if (item == null) {
                     false
                 }else {
-                    val r = it.executeTransaction{
+                    it.executeTransaction{
                         item.deleteFromRealm()
                     }
                     true

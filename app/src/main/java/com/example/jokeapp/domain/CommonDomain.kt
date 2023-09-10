@@ -2,10 +2,9 @@ package com.example.jokeapp.domain
 
 import com.example.jokeapp.core.CommonItem
 import com.example.jokeapp.core.Mapper
-import com.example.jokeapp.data.FavoriteProvider
 import com.example.jokeapp.data.CommonDataModel
+import com.example.jokeapp.data.FavoriteProvider
 import com.example.jokeapp.presentation.Error
-import java.lang.IllegalStateException
 
 interface CommonDomain<E> : CommonItem<E>, FavoriteProvider {
 

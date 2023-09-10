@@ -1,7 +1,6 @@
 package com.example.jokeapp.data.cache
 
 import com.example.jokeapp.data.CommonDataModel
-import java.lang.IllegalStateException
 
 interface ChangeItem<E> {
 

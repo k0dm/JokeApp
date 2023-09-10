@@ -10,11 +10,11 @@ import com.example.jokeapp.presentation.views.CustomTextView
 
 class UiRecyclerAdapter<E>(
     private val listener: FavoriteItemClickListener<E>,
-    private val communication: StateCommunication<E>
+    private val listChanges: ListChanges<E>
 ) : RecyclerView.Adapter<UiRecyclerAdapter.CommonDataViewHolder<E>>() {
 
     fun update() {
-        val result = communication.getDiffResult()
+        val result = listChanges.getDiffResult()
         result.dispatchUpdatesTo(this)
     }
 
@@ -34,15 +34,15 @@ class UiRecyclerAdapter<E>(
     }
 
     override fun onBindViewHolder(holder: CommonDataViewHolder<E>, position: Int) {
-        holder.bind(communication.getList()[position])
+        holder.bind(listChanges.getList()[position])
     }
 
-    override fun getItemViewType(position: Int) = when (communication.getList()[position]) {
+    override fun getItemViewType(position: Int) = when (listChanges.getList()[position]) {
         is CommonUi.Failed -> 0
         else -> 1
     }
 
-    override fun getItemCount(): Int = communication.getList().size
+    override fun getItemCount(): Int = listChanges.getList().size
 
     abstract class CommonDataViewHolder<E>(view: View) :
         RecyclerView.ViewHolder(view) {

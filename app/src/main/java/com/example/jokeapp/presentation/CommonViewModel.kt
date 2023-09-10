@@ -1,5 +1,6 @@
 package com.example.jokeapp.presentation
 
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -13,7 +14,7 @@ import com.example.jokeapp.domain.CommonInteractor
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-interface CommonViewModel<E> {
+interface CommonViewModel<E> : ListChanges<E> {
     fun getItem()
     fun getItemList()
     fun changeItemStatus()
@@ -23,13 +24,14 @@ interface CommonViewModel<E> {
     fun observeList(owner: LifecycleOwner, observer: Observer<List<CommonUi<E>>>)
 
     abstract class Abstract<E>(
+        name: String,
         private val interactor: CommonInteractor<E>,
         private val communication: StateCommunication<E>,
         private val progress: State = State.Progress(),
         private val toBaseUi: Mapper<E, CommonUi<E>> = ToBaseUi(),
         private val toFavoriteUi: Mapper<E, CommonUi<E>> = ToFavoriteUi(),
         dispatcherList: DispatcherList = DispatcherList.Base()
-    ) : CommonViewModel<E>, BaseViewModel(dispatcherList) {
+    ) : CommonViewModel<E>, BaseViewModel(name, dispatcherList) {
 
         private val blockUi: suspend (CommonDomain<E>) -> Unit = { jokeDomain ->
             val commonUi = if (jokeDomain.isSuccessful()) {
@@ -63,6 +65,10 @@ interface CommonViewModel<E> {
             }
         }
 
+        override fun getDiffResult() = communication.getDiffResult()
+
+        override fun getList() = communication.getList()
+
         override fun changeItemStatus(id: E) {
             handle({
                 interactor.removeItem(id)
@@ -88,17 +94,21 @@ interface CommonViewModel<E> {
             communication.observeList(owner, observer)
         }
     }
-
-    class Joke(interactor: CommonInteractor<Int>, communication: StateCommunication<Int>) :
-        Abstract<Int>(interactor, communication)
-
-    class Quote(interactor: CommonInteractor<String>, communication: StateCommunication<String>) :
-        Abstract<String>(interactor, communication)
 }
 
 abstract class BaseViewModel(
+    private val name: String,
     private val dispatcherList: DispatcherList
 ) : ViewModel() {
+
+    init {
+        Log.d("k0dm", "init $name")
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("k0dm", "onCleared $name")
+    }
 
     fun <T> handle(
         blockIo: suspend () -> T,

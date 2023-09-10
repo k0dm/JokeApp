@@ -1,4 +1,4 @@
-package com.example.jokeapp.data.cache
+package com.example.jokeapp.core.data.cache
 
 import io.realm.Realm
 

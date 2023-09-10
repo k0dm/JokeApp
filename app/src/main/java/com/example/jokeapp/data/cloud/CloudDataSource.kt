@@ -1,13 +1,12 @@
 package com.example.jokeapp.data.cloud
 
-import com.example.jokeapp.data.CommonDataModel
 import com.example.jokeapp.core.CommonItem
 import com.example.jokeapp.core.ToDataIsNotFavorite
+import com.example.jokeapp.data.CommonDataModel
 import com.example.jokeapp.data.DataFetcher
 import com.example.jokeapp.domain.NoConnectionException
 import com.example.jokeapp.domain.ServiceUnavailableException
 import retrofit2.Call
-import java.lang.Exception
 import java.net.UnknownHostException
 
 interface CloudDataSource<E> : DataFetcher<E> {

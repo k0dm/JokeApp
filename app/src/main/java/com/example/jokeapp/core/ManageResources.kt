@@ -1,4 +1,4 @@
-package com.example.jokeapp.presentation
+package com.example.jokeapp.core
 
 import android.content.Context
 import androidx.annotation.StringRes

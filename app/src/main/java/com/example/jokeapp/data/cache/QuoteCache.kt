@@ -2,7 +2,6 @@ package com.example.jokeapp.data.cache
 
 import com.example.jokeapp.core.CommonItem
 import com.example.jokeapp.core.Mapper
-import com.example.jokeapp.data.CommonDataModel
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 

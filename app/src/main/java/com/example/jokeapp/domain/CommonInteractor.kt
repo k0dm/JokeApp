@@ -3,8 +3,6 @@ package com.example.jokeapp.domain
 import android.util.Log
 import com.example.jokeapp.data.Repository
 
-import java.lang.Exception
-
 interface CommonInteractor<E> {
 
     suspend fun getItem(): CommonDomain<E>

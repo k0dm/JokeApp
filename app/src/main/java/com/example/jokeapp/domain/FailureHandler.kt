@@ -1,7 +1,7 @@
 package com.example.jokeapp.domain
 
+import com.example.jokeapp.core.ManageResources
 import com.example.jokeapp.presentation.Error
-import com.example.jokeapp.presentation.ManageResources
 
 interface FailureHandler {
 

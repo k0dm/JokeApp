@@ -2,6 +2,7 @@ package com.example.jokeapp.presentation
 
 import androidx.annotation.StringRes
 import com.example.jokeapp.R
+import com.example.jokeapp.core.ManageResources
 
 interface Error {
 

@@ -1,10 +1,10 @@
 package com.example.jokeapp.data
 
-import com.example.jokeapp.data.cache.ChangeItem
-import com.example.jokeapp.data.cache.ChangeItemStatus
 import com.example.jokeapp.core.CommonItem
 import com.example.jokeapp.core.Mapper
 import com.example.jokeapp.core.ShowText
+import com.example.jokeapp.data.cache.ChangeItem
+import com.example.jokeapp.data.cache.ChangeItemStatus
 
 
 interface CommonDataModel<E> : CommonItem<E>, ChangeItem<E>, FavoriteProvider {

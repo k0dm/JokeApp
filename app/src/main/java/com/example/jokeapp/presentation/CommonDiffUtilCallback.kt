@@ -1,6 +1,5 @@
 package com.example.jokeapp.presentation
 
-import android.webkit.JsPromptResult
 import androidx.recyclerview.widget.DiffUtil
 
 class CommonDiffUtilCallback<E>(

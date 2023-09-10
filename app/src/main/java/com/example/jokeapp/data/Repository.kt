@@ -1,9 +1,8 @@
 package com.example.jokeapp.data
 
 import com.example.jokeapp.data.cache.CacheDataSource
-import com.example.jokeapp.data.cloud.CloudDataSource
 import com.example.jokeapp.data.cache.CachedItem
-import java.lang.Exception
+import com.example.jokeapp.data.cloud.CloudDataSource
 
 interface Repository<E> {
 
